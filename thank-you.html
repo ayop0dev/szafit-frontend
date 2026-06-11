@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="شكراً على حجزك مع SZA Fit!">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' data: https:; connect-src 'self' https://api.szafit.com https://z.szafit.com https://images.unsplash.com; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title data-i18n="thankYou.title">شكراً | SZA Fit</title>
+
+    <style>
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-ExtraLight.ttf') format('truetype');
+            font-weight: 200;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-Light.ttf') format('truetype');
+            font-weight: 300;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-Medium.ttf') format('truetype');
+            font-weight: 500;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-SemiBold.ttf') format('truetype');
+            font-weight: 600;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-ExtraBold.ttf') format('truetype');
+            font-weight: 800;
+            font-display: swap;
+        }
+    </style>
+
+    <link rel="stylesheet" href="styles/tailwind.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/fonts/saudi-riyal-font/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="min-h-screen bg-neutral-lightest text-neutral-dark-1 dark:bg-neutral-dark-1 dark:text-neutral-lightest flex flex-col">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    <div class="pointer-events-none fixed inset-0 -z-10 neo-grid-bg opacity-15 dark:opacity-30"></div>
+
+    <nav class="fixed top-0 z-50 w-full border-b border-neutral-light/60 bg-white/80 backdrop-blur-xl dark:border-white/5 dark:bg-neutral-dark-1/80">
+        <div class="container-page nav-main flex items-center justify-between py-5">
+            <div class="flex items-center gap-3 nav-brand">
+                <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-green/15 text-primary-green">
+                    <i class="fas fa-dumbbell text-lg"></i>
+                </div>
+                <div>
+                    <a href="index.html" class="nav-brand-title text-lg font-black tracking-[0.15em] text-neutral-dark-1 dark:text-neutral-lightest">SZA FIT</a>
+                    <p class="nav-brand-tagline text-xs uppercase tracking-[0.4em] text-neutral-gray-light" data-i18n="nav.tagline">Elite Coaching</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 nav-actions">
+                <button id="langToggle" class="btn-ghost" aria-label="Toggle language">EN</button>
+                <button id="themeToggle" class="btn-ghost" aria-label="Toggle theme">
+                    <i class="fas fa-sun" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 flex items-center justify-center pt-24 pb-12">
+        <section class="container-page max-w-2xl">
+            <div class="card space-y-component-spacious text-center py-section-spacious px-6 md:px-12">
+                <div class="flex justify-center">
+                    <div class="h-24 w-24 rounded-full bg-primary-green/20 flex items-center justify-center">
+                        <i class="fas fa-check text-4xl text-primary-green"></i>
+                    </div>
+                </div>
+
+                <div class="space-y-component-normal">
+                    <h1 class="text-4xl md:text-5xl font-black" data-i18n="thankYou.heading">شكراً!</h1>
+                    <p class="text-xl text-neutral-gray-light" data-i18n="thankYou.subheading">تم استقبال طلبك بنجاح</p>
+                    <p class="text-neutral-gray-light max-w-xl mx-auto" data-i18n="thankYou.message">سيتم التواصل معك قريباً لتأكيد البرنامج والبدء في رحلتك.</p>
+                </div>
+
+                <div id="orderBox" class="hidden">
+                    <div class="inline-flex items-center gap-3 rounded-2xl border border-primary-green/30 bg-primary-green/5 px-6 py-4">
+                        <span class="text-sm text-neutral-gray-light" data-i18n="thankYou.orderLabel">رقم الطلب:</span>
+                        <span id="orderIdDisplay" class="text-2xl font-black text-primary-green font-mono">-</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4 sm:flex-row justify-center">
+                    <a href="https://wa.me/+966550150445" target="_blank" rel="noopener noreferrer" class="btn-primary">
+                        <i class="fab fa-whatsapp mr-2"></i>
+                        <span data-i18n="thankWhatsApp">تواصل عبر واتساب</span>
+                    </a>
+                    <a href="index.html" class="btn-ghost" data-i18n="thankYou.backHome">العودة للصفحة الرئيسية</a>
+                </div>
+
+                <div class="card bg-primary-green/5 border border-primary-green/20 text-left" dir="rtl">
+                    <p class="text-sm mb-3 font-semibold" data-i18n="thankYou.nextSteps">الخطوات التالية:</p>
+                    <ul class="text-sm text-neutral-gray-light space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary-green font-bold">1.</span>
+                            <span data-i18n="thankYou.step1">تأكيد بريدك الإلكتروني</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary-green font-bold">2.</span>
+                            <span data-i18n="thankYou.step2">اكتمال عملية الدفع</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-primary-green font-bold">3.</span>
+                            <span data-i18n="thankYou.step3">الوصول إلى التطبيق والبدء</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-neutral-light/60 bg-white/80 py-10 dark:border-white/5 dark:bg-neutral-dark-1/90">
+        <div class="container-page flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-lg font-black tracking-[0.15em] text-neutral-dark-1 dark:text-neutral-lightest">SZA FIT</p>
+                <p class="text-xs uppercase tracking-[0.4em] text-neutral-gray-light" data-i18n="footer.tagline">Elite Coaching</p>
+            </div>
+            <div class="flex gap-4 text-neutral-gray-light">
+                <a class="hover:text-primary-green" href="https://instagram.com/szafit" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a class="hover:text-primary-green" href="https://twitter.com/szafit" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a class="hover:text-primary-green" href="https://youtube.com/@szafit" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                <a class="hover:text-primary-green" href="https://tiktok.com/@szafit" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/dist/umd/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.4.2/dist/umd/i18nextHttpBackend.min.js"></script>
+    <script src="scripts/i18n-config.js"></script>
+
+    <script>
+    (function() {
+        // Parse order_id from URL
+        const params = new URLSearchParams(window.location.search);
+        const orderId = params.get('order_id');
+        if (orderId) {
+            const box = document.getElementById('orderBox');
+            const display = document.getElementById('orderIdDisplay');
+            if (box && display) {
+                display.textContent = orderId;
+                box.classList.remove('hidden');
+            }
+        }
+
+        // Language toggle (reuse i18n-config functions)
+        const langToggle = document.getElementById('langToggle');
+        if (langToggle && typeof toggleLanguage === 'function') {
+            langToggle.addEventListener('click', function() {
+                const newLang = toggleLanguage();
+                // Re-apply data-i18n attributes on this page
+                if (typeof updateDataI18nElements === 'function') {
+                    updateDataI18nElements(newLang);
+                }
+                // Update dir
+                document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+            });
+        }
+
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            function applyTheme(theme) {
+                const isDark = theme === 'dark';
+                document.documentElement.classList.toggle('dark', isDark);
+                themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+            }
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme);
+            themeToggle.addEventListener('click', function() {
+                const newTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            });
+        }
+
+        // Sync lang button text on load
+        const currentLang = document.documentElement.lang || 'ar';
+        if (langToggle) {
+            langToggle.textContent = currentLang === 'ar' ? 'EN' : 'AR';
+        }
+    })();
+    </script>
+</body>
+</html>

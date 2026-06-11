@@ -1,0 +1,1294 @@
+/* ========================= LAYER: THEME TOKENS =========================
+    SZAFIT - THEME LAYERS (Light + Dark)
+    Modern - Neo - Minimal - Active
+    ===================================================================== */
+:root {
+    color-scheme: light dark;
+
+    /* Brand palette (from mobileapp-colors.css) */
+    --primary-green-dark: #6B8F1F;
+    --primary-green: #C6FF34;
+    --primary-green-light: #D9FF66;
+    --primary-green-lighter: #E8FF99;
+    --primary-green-pale: #F2FFCC;
+    --primary-green-ultra-light: #FAFFED;
+    --accent-green: #9ac527;
+    --gradient-green: linear-gradient(270deg, #C6FF34 0%, #9ac527 100%);
+
+    --neutral-dark-1: #171717;
+    --neutral-dark-2: #2D2D2D;
+    --neutral-gray: #7e7e7e;
+    --neutral-gray-light: #b1b1b1;
+    --neutral-light: #d4d5d4;
+    --neutral-lightest: #fafaf9;
+
+    /* Theme tokens (light defaults) */
+    --surface-base: var(--neutral-lightest);
+    --surface-elev: #ffffff;
+    --surface-soft: #f7f9f8;
+    --text-primary: #1b3624;
+    --text-secondary: #5a5a5a;
+    --text-muted: var(--neutral-gray);
+    --border-subtle: rgba(27, 54, 36, 0.08);
+    --border-strong: rgba(198, 255, 52, 0.28);
+    --accent-strong: #5f7d1f;
+    --shadow-soft: 0 6px 20px rgba(27, 54, 36, 0.08);
+    --shadow-glow: 0 10px 28px rgba(198, 255, 52, 0.18);
+}
+
+.dark {
+    color-scheme: dark;
+    --surface-base: #171717;
+    --surface-elev: #252525;
+    --surface-soft: #1f1f1f;
+    --text-primary: #cfcfc4;
+    --text-secondary: #b3b3a8;
+    --text-muted: #999990;
+    --border-subtle: rgba(207, 207, 196, 0.08);
+    --border-strong: rgba(198, 255, 52, 0.35);
+    --accent-strong: var(--primary-green-light);
+    --shadow-soft: 0 10px 28px rgba(198, 255, 52, 0.12);
+    --shadow-glow: 0 12px 36px rgba(198, 255, 52, 0.2);
+}
+
+/* ========================= LAYER: BASE THEME APPLICATION ========================= */
+body {
+    background-color: var(--surface-base);
+    color: var(--text-primary);
+    transition: background-color 200ms ease, color 200ms ease;
+}
+
+/* ========================= LAYER: GLOBAL FIXES ========================= */
+@media (min-width: 1024px) {
+    #mobileToggle {
+        display: none !important;
+    }
+}
+
+/* ========================= LAYER: TYPOGRAPHY ACCENTS ========================= */
+.section-title {
+    color: var(--text-primary);
+}
+
+.section-desc {
+    color: var(--text-secondary);
+    font-size: 1.5rem;  /* أو أي قيمة تبيها */
+    line-height: 1.6;
+}
+
+/* Programs section: increase space between title and description */
+#programs .section-title {
+    margin-bottom: 1.75rem;
+}
+
+/* METHOD section: increase vertical spacing between method cards only */
+.method-points > * + * {
+    margin-top: 2.50rem !important;
+}
+
+/* ========================= SECTION: HERO ========================= */
+
+.hero-section {
+    min-height: 100vh;
+    padding-bottom: 3.5rem;
+}
+
+.hero-section > .container-page {
+    padding-top: 6.5rem;
+    padding-bottom: 3rem;
+}
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(198, 255, 52, 0.08);
+    border: 1px solid rgba(198, 255, 52, 0.25);
+    color: var(--accent-green);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.hero-badge__dot {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(198, 255, 52, 0.2);
+    color: var(--accent-green);
+    font-size: 0.65rem;
+}
+
+.hero-title-gradient {
+    background: linear-gradient(120deg, var(--primary-green) 0%, var(--primary-green-light) 45%, var(--accent-green) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-social {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.avatar-stack {
+    display: flex;
+    align-items: center;
+}
+
+.avatar-stack img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    object-fit: cover;
+}
+
+.avatar-stack img + img {
+    margin-inline-start: -0.75rem;
+}
+
+.hero-social .text-sm {
+    font-size: 1rem;
+}
+
+.hero-social .fa-star {
+    font-size: 1.05rem;
+}
+
+.hero-card {
+    backdrop-filter: blur(12px);
+}
+
+.hero-card__media img {
+    transition: transform 400ms ease;
+    object-position: 50% 20%;
+}
+
+.hero-card:hover .hero-card__media img {
+    transform: scale(1.03);
+}
+
+.hero-facts {
+    display: grid;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.hero-fact {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.hero-fact__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: rgba(198, 255, 52, 0.18);
+    color: var(--accent-green);
+    font-size: 0.7rem;
+}
+
+.hero-energy {
+    position: absolute;
+    left: 1.25rem;
+    bottom: 1.25rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 1px solid rgba(198, 255, 52, 0.35);
+    background: rgba(198, 255, 52, 0.12);
+    color: var(--accent-green);
+    display: grid;
+    place-items: center;
+    transition: transform 200ms ease, background 200ms ease;
+}
+
+.hero-energy:hover {
+    transform: scale(1.05);
+    background: rgba(198, 255, 52, 0.2);
+}
+
+.hero-marquee {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(120deg, var(--primary-green) 0%, var(--primary-green-light) 45%, var(--accent-green) 100%);
+    color: var(--neutral-dark-1);
+    overflow: hidden;
+    border-top: 1px solid rgba(0, 0, 0, 0.18);
+    padding: 0.6rem 0;
+    z-index: 2;
+}
+
+.hero-marquee__inner {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14%, #000 86%, transparent 100%);
+}
+
+.hero-marquee__track {
+    display: flex;
+    gap: 5rem;
+    white-space: nowrap;
+    will-change: transform;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+@keyframes hero-marquee-scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* =============================================
+   STATS STRIP (Below Programs)
+   ============================================= */
+
+.stats-strip {
+    background: linear-gradient(120deg, var(--primary-green) 0%, var(--primary-green-light) 45%, var(--accent-green) 100%);
+    color: var(--neutral-dark-1);
+    padding-block: 1.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.18);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+.stats-strip__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: nowrap;
+}
+
+.stats-item {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+}
+
+.stats-item__number {
+    font-size: clamp(2.1rem, 3vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+}
+
+.stats-item__label {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.78);
+}
+
+body:is(.dark *) .stats-strip {
+    color: var(--neutral-dark-1);
+}
+
+/* =============================================
+   APP SECTION - MOBILE EXPERIENCE
+   ============================================= */
+
+.app-feature-list {
+    margin-top: 1.75rem;
+    display: grid;
+    gap: 0.9rem;
+}
+
+.app-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 0.9rem;
+    background-color: rgba(198, 255, 52, 0.05);
+    border: 1px solid var(--border-subtle);
+}
+
+.app-feature-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: rgba(198, 255, 52, 0.14);
+    color: var(--primary-green);
+    box-shadow: 0 8px 18px rgba(198, 255, 52, 0.25);
+}
+
+.app-feature-title {
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.app-phone {
+    position: relative;
+    width: 100%;
+    max-width: 20rem;
+    padding: 0.6rem;
+    border-radius: 2.2rem;
+    background: radial-gradient(circle at 10% 0%, rgba(198, 255, 52, 0.45), transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(198, 255, 52, 0.55), transparent 55%),
+                rgba(15, 23, 42, 0.98);
+    box-shadow: var(--shadow-glow);
+}
+
+.app-phone__inner {
+    position: relative;
+    border-radius: 1.7rem;
+    overflow: hidden;
+    padding: 1.1rem 1.1rem 1.2rem;
+    background: linear-gradient(145deg, #020617 0%, #020617 35%, #0b1220 70%, #0f766e 100%);
+    border: 1px solid rgba(148, 163, 184, 0.65);
+    color: var(--neutral-lightest);
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.app-phone__notch {
+    position: absolute;
+    top: 0.55rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38%;
+    height: 0.32rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.92);
+}
+
+.app-phone__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.68rem;
+    opacity: 0.85;
+}
+
+.app-phone__status {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.app-phone__signal,
+.app-phone__wifi,
+.app-phone__battery {
+    display: inline-block;
+    border-radius: 999px;
+    background: rgba(248, 250, 252, 0.9);
+}
+
+.app-phone__signal {
+    width: 0.7rem;
+    height: 0.18rem;
+}
+
+.app-phone__wifi {
+    width: 0.5rem;
+    height: 0.18rem;
+}
+
+.app-phone__battery {
+    width: 0.85rem;
+    height: 0.28rem;
+}
+
+.app-phone__hero {
+    margin-top: 0.3rem;
+}
+
+.app-phone__eyebrow {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(226, 232, 240, 0.85);
+}
+
+.app-phone__headline {
+    margin-top: 0.35rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.app-phone__stats {
+    margin-top: 0.7rem;
+    display: grid;
+    gap: 0.6rem;
+}
+
+.app-phone__stat {
+    padding: 0.55rem 0.7rem;
+    border-radius: 0.9rem;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+}
+
+.app-phone__stat-label {
+    font-size: 0.7rem;
+    color: rgba(209, 213, 219, 0.85);
+}
+
+.app-phone__stat-value {
+    margin-top: 0.15rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+}
+
+.app-phone__stat-bar {
+    margin-top: 0.3rem;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: rgba(30, 64, 175, 0.55);
+    overflow: hidden;
+}
+
+.app-phone__stat-bar span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #9ac527 0%, #C6FF34 50%, #E8FF99 100%);
+}
+
+.app-phone__cta-row {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.7rem;
+}
+
+.app-phone__cta-label {
+    padding-inline: 0.7rem;
+    padding-block: 0.25rem;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.85);
+}
+
+.app-phone__cta-pill {
+    padding-inline: 0.9rem;
+    padding-block: 0.3rem;
+    border-radius: 999px;
+    background: rgba(198, 255, 52, 0.22);
+    color: #022c22;
+    font-weight: 600;
+}
+
+/* ========================= SYSTEM: LABELS & BADGES ========================= */
+
+/* Base label component */
+.label {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 300ms ease;
+    gap: 0.25rem;
+}
+
+/* Label variants */
+.label--primary {
+    background-color: var(--primary-green);
+    color: #0e2a23;
+}
+
+.label--secondary {
+    background-color: rgba(198, 255, 52, 0.1);
+    color: var(--primary-green);
+    border: 1px solid var(--border-strong);
+}
+
+.label--accent {
+    background-color: var(--accent-green);
+    color: #0e2a23;
+}
+
+.label--outline {
+    background-color: transparent;
+    color: var(--primary-green);
+    border: 1px solid var(--border-strong);
+}
+
+.label--small {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.label--minimal {
+    padding: 0.375rem 0.875rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+}
+
+/* Dark mode adjustments */
+.dark .label--secondary {
+    background-color: rgba(198, 255, 52, 0.12);
+}
+
+body:not(.dark) .label--secondary,
+body:not(.dark) .label--outline {
+    color: var(--accent-strong);
+}
+
+/* Legacy class aliases - backward compatibility */
+.section-label {
+    /* Uses label--secondary style */
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.875rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    border: 1px solid var(--border-strong);
+    background-color: rgba(198, 255, 52, 0.1);
+    color: var(--primary-green);
+}
+
+.price-badge {
+    /* Uses label--primary style with custom styling */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--primary-green);
+}
+
+.req-label {
+    /* Uses label--minimal style */
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--primary-green);
+}
+
+.stat-pill {
+    /* Uses label style with custom padding */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: rgba(198, 255, 52, 0.08);
+    border: 1px solid var(--border-subtle);
+    transition: all 300ms ease;
+}
+
+.stat-pill:hover {
+    background-color: rgba(198, 255, 52, 0.12);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 2px rgba(198, 255, 52, 0.15);
+}
+
+.stat-pill:focus-within {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 2px;
+}
+
+body:not(.dark) .section-label {
+    color: var(--accent-strong);
+}
+
+body:not(.dark) .price-badge {
+    color: var(--accent-strong);
+}
+
+body:not(.dark) .req-label {
+    color: var(--accent-strong);
+}
+
+/* ========================= NAVBAR ========================= */
+
+.nav-main {
+    column-gap: 1.25rem;
+}
+
+.nav-actions {
+    column-gap: 0.75rem;
+}
+
+.nav-brand-title {
+    white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+    .nav-main {
+        column-gap: 0.75rem;
+    }
+
+    .nav-actions {
+        column-gap: 0.5rem;
+    }
+
+    /* Make nav CTA and controls more compact on mobile so all stay on one line */
+    #navCTA {
+        padding-inline: 0.9rem;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    #langToggle,
+    #themeToggle,
+    #mobileToggle {
+        padding-inline: 0.5rem;
+    }
+
+    .nav-brand-title {
+        font-size: 0.95rem;
+        letter-spacing: 0.12em;
+    }
+
+    .nav-brand-tagline {
+        display: none;
+    }
+}
+
+/* ========================= SYSTEM: CARDS ========================= */
+
+/* Base card component */
+.card {
+    border: 1px solid var(--border-subtle);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    background-color: var(--surface-elev);
+    transition: all 300ms ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+}
+
+.card:focus-within {
+    outline: 3px solid var(--accent-green);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(198, 255, 52, 0.2);
+}
+
+/* Card modifier variants */
+.card--accent {
+    border: 2px solid var(--primary-green);
+    background-color: rgba(198, 255, 52, 0.03);
+}
+
+.card--minimal {
+    border: none;
+    box-shadow: none;
+    padding: 1rem;
+}
+
+.card--compact {
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+/* Dark theme support */
+.dark .card {
+    background-color: var(--surface-elev);
+    border-color: var(--border-subtle);
+}
+
+.dark .card--accent {
+    background-color: rgba(198, 255, 52, 0.05);
+}
+
+/* Legacy class aliases for backward compatibility */
+.lux-card,
+.package-card,
+.story-card {
+    /* Inherit from .card */
+    border: 1px solid var(--border-subtle);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-soft);
+    background-color: var(--surface-elev);
+    transition: all 300ms ease;
+}
+
+.lux-card:hover,
+.package-card:hover,
+.story-card:hover {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+}
+
+.dark .lux-card,
+.dark .package-card,
+.dark .story-card {
+    background-color: var(--surface-elev);
+    border-color: var(--border-subtle);
+}
+
+/* Buttons */
+.btn-primary {
+    color: #0e2a23;
+    background-color: var(--primary-green);
+    box-shadow: var(--shadow-glow);
+    border: 2px solid var(--primary-green);
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 300ms ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(198, 255, 52, 0.35);
+}
+
+.btn-primary:focus {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 2px;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(198, 255, 52, 0.25);
+    border-color: var(--accent-green);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-secondary {
+    color: var(--accent-strong);
+    border: 2px solid var(--border-strong);
+    background-color: transparent;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    transition: all 300ms ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-secondary:hover {
+    background-color: var(--primary-green);
+    color: #0e2a23;
+    border-color: var(--primary-green);
+    opacity: 0.9;
+}
+
+.btn-secondary:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+.btn-secondary:active {
+    opacity: 0.8;
+    border-color: var(--accent-green);
+}
+
+.btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-ghost {
+    color: var(--text-secondary);
+    border: 1px solid transparent;
+    background-color: transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 250ms ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-ghost:hover {
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+    background-color: rgba(198, 255, 52, 0.05);
+}
+
+.btn-ghost:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+.btn-ghost:active {
+    border-color: var(--accent-green);
+    background-color: rgba(198, 255, 52, 0.1);
+}
+
+.btn-ghost:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dark .btn-ghost {
+    color: var(--text-secondary);
+    border-color: transparent;
+}
+
+.dark .btn-ghost:hover {
+    color: var(--primary-green);
+    border-color: var(--primary-green);
+    background-color: rgba(198, 255, 52, 0.08);
+}
+
+/* ========================= SYSTEM: NEO ACCENTS & UTILITIES ========================= */
+.neo-divider {
+    background-image: linear-gradient(90deg, transparent, rgba(198, 255, 52, 0.3), transparent);
+}
+
+.neo-text-gradient {
+    background: linear-gradient(120deg, #C6FF34 0%, #D9FF66 50%, #E8FF99 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* =============================================
+   LIGHT THEME TEXT CONTRAST OVERRIDES
+   ============================================= */
+
+/* Comprehensive light mode text color fixes for WCAG AA compliance */
+
+/* UNIVERSAL text-neutral-gray-light override for ALL elements */
+body:not(.dark) .text-neutral-gray-light {
+    color: #5a5a5a !important; /* Dark gray for light mode - WCAG AA compliant */
+}
+
+/* UNIVERSAL text-neutral-gray-light for dark mode - STRONG SELECTOR */
+html.dark .text-neutral-gray-light,
+html:is(.dark) .text-neutral-gray-light,
+.dark .text-neutral-gray-light {
+    color: #ffffff !important; /* Pure white in dark mode for maximum contrast */
+}
+
+/* Even stronger: direct element override */
+.text-neutral-gray-light:is(.dark *) {
+    color: #ffffff !important;
+}
+
+/* Card text colors in light mode */
+body:not(.dark) .card,
+body:not(.dark) .lux-card,
+body:not(.dark) .package-card,
+body:not(.dark) .story-card {
+    color: var(--text-primary);
+}
+
+body:not(.dark) .card .text-neutral-lightest,
+body:not(.dark) .lux-card .text-neutral-lightest,
+body:not(.dark) .package-card .text-neutral-lightest,
+body:not(.dark) .story-card .text-neutral-lightest {
+    color: var(--text-primary);
+}
+
+body:not(.dark) .card .text-neutral-gray-light,
+body:not(.dark) .lux-card .text-neutral-gray-light,
+body:not(.dark) .package-card .text-neutral-gray-light,
+body:not(.dark) .story-card .text-neutral-gray-light {
+    color: #6a6a6a !important; /* WCAG AA compliant: 4.6:1 contrast on white */
+}
+
+/* Background overrides for light mode */
+body:not(.dark) .card .bg-white\/5,
+body:not(.dark) .lux-card .bg-white\/5,
+body:not(.dark) .package-card .bg-white\/5 {
+    background-color: rgba(198, 255, 52, 0.08);
+}
+
+/* Section text colors */
+body:not(.dark) .section-desc {
+    color: #5a5a5a; /* Dark text in light mode */
+}
+
+body:not(.dark) .section-title {
+    color: var(--neutral-dark-1); /* Dark title in light mode */
+}
+
+/* Dark mode section text - STRONG SELECTORS */
+html.dark .section-desc,
+html:is(.dark) .section-desc,
+.dark .section-desc {
+    color: #e0e0e0 !important; /* Light text in dark mode - FORCED */
+}
+
+html.dark .section-title,
+html:is(.dark) .section-title,
+.dark .section-title {
+    color: var(--neutral-lightest) !important; /* Light title in dark mode - FORCED */
+}
+
+/* Even stronger: direct element override */
+.section-desc:is(.dark *) {
+    color: #e0e0e0 !important;
+}
+
+.section-title:is(.dark *) {
+    color: var(--neutral-lightest) !important;
+}
+
+/* Fix stat pill text contrast in light mode */
+body:not(.dark) .stat-pill {
+    color: var(--neutral-dark-1);
+    background-color: rgba(198, 255, 52, 0.06);
+}
+
+body:not(.dark) .stat-pill .text-neutral-gray-light {
+    color: #6a6a6a !important;
+}
+
+/* Universal text color fixes for paragraphs and spans in light mode */
+body:not(.dark) p,
+body:not(.dark) span {
+    color: inherit; /* Inherit from parent, fallback to body color */
+}
+
+/* Ensure proper contrast for secondary text elements in light mode */
+body:not(.dark) .text-sm,
+body:not(.dark) .text-xs {
+    color: inherit; /* Will inherit from parent selectors above */
+}
+
+/* Dark mode text colors - ULTRA STRONG for text-sm and text-xs
+   NOTE: exclude .text-neutral-gray-light so its own white override wins */
+html.dark .text-sm:not(.text-neutral-gray-light),
+html:is(.dark) .text-sm:not(.text-neutral-gray-light),
+.dark .text-sm:not(.text-neutral-gray-light) {
+    color: #d0d0d0 !important; /* Light gray for generic small text */
+}
+
+html.dark .text-xs:not(.text-neutral-gray-light),
+html:is(.dark) .text-xs:not(.text-neutral-gray-light),
+.dark .text-xs:not(.text-neutral-gray-light) {
+    color: #d0d0d0 !important;
+}
+
+/* Direct element override for text-sm and text-xs (also excluding gray-light) */
+.text-sm:is(.dark *):not(.text-neutral-gray-light) {
+    color: #d0d0d0 !important;
+}
+
+.text-xs:is(.dark *):not(.text-neutral-gray-light) {
+    color: #d0d0d0 !important;
+}
+
+/* Programs section text colors now handled by grid container */
+
+/* STORIES section: force highest contrast for gray text in dark mode */
+html.dark .story-card .text-neutral-gray-light,
+html:is(.dark) .story-card .text-neutral-gray-light,
+.dark .story-card .text-neutral-gray-light {
+    color: #ffffff !important;
+}
+
+/* FOOTER: ensure tagline and icons are light in dark mode */
+html.dark footer .text-neutral-gray-light,
+html:is(.dark) footer .text-neutral-gray-light,
+.dark footer .text-neutral-gray-light {
+    color: #f5f6f5 !important;
+}
+
+/* HERO: ensure small gray texts are bright in dark mode */
+html.dark .hero-card .text-neutral-gray-light,
+html:is(.dark) .hero-card .text-neutral-gray-light,
+.dark .hero-card .text-neutral-gray-light {
+    color: #ffffff !important;
+}
+
+/* =============================================
+   NEW SAUDI RIYAL SYMBOL STYLING
+   ============================================= */
+
+/* Currency symbol styling (SVG-based, inherits current text color) */
+.sar-currency-symbol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin: 0 0.25rem;
+}
+
+.sar-currency-symbol svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Ensure SVG path follows text color in all themes */
+.sar-currency-symbol .cls-1 {
+    fill: currentColor;
+}
+
+/* Price badge with SAR symbol integration */
+.price-badge .sar-currency-symbol {
+    margin-inline-start: 0;
+}
+
+/* WooCommerce price formatting */
+.woocommerce-price-amount {
+    display: inline-block;
+}
+
+.woocommerce-price-amount .sar-currency-symbol {
+    margin: 0 0.25rem;
+}
+
+/* =============================================
+   SECTION STRUCTURE UTILITIES
+   ============================================= */
+
+/* Unified section container classes */
+.section {
+    padding: 3rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section {
+        padding: 3rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section {
+        padding: 4rem 3rem;
+    }
+}
+
+/* Section variants */
+.section--compact {
+    padding: 2rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section--compact {
+        padding: 2rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section--compact {
+        padding: 2.5rem 3rem;
+    }
+}
+
+.section--spacious {
+    padding: 4rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section--spacious {
+        padding: 4rem 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section--spacious {
+        padding: 5rem 3rem;
+    }
+}
+
+/* Container page helper (max-width and horizontal padding) */
+.container-page {
+    max-width: 90rem; /* 1440px */
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .container-page {
+        padding-inline: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-page {
+        padding-inline: 3rem;
+    }
+}
+
+/* Grid layout handles card spacing */
+
+/* =============================================
+   ENHANCED INTERACTIVE STATES
+   ============================================= */
+
+/* Links with focus states */
+a {
+    transition: all 250ms ease;
+}
+
+a:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+a:focus:not(:focus-visible) {
+    outline: none;
+}
+
+a:focus-visible {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+/* Interactive elements */
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+    transition: all 250ms ease;
+}
+
+[role="button"]:focus,
+[tabindex]:not([tabindex="-1"]):focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+/* Image hover effects with focus */
+.media-hover {
+    transition: transform 400ms ease, box-shadow 400ms ease;
+}
+
+.media-hover:hover {
+    transform: scale(1.02);
+}
+
+.media-hover:focus {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+/* Soft lift effect enhancement */
+.soft-lift {
+    transition: transform 300ms ease, box-shadow 300ms ease;
+}
+
+.soft-lift:hover {
+    transform: translateY(-4px);
+}
+
+.soft-lift:active {
+    transform: translateY(-1px);
+}
+
+.soft-lift:focus-within {
+    outline: 2px solid var(--primary-green);
+    outline-offset: 2px;
+}
+
+/* Keyboard navigation highlight */
+:focus-visible {
+    outline: 2px solid var(--accent-green);
+    outline-offset: 2px;
+    border-radius: 0.25rem;
+}
+
+/* Disabled state for all interactive elements */
+[disabled],
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Mobile tap targets (WCAG 2.5.5) */
+@media (max-width: 640px) {
+    .btn-ghost {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :focus,
+    :focus-visible {
+        outline-width: 3px;
+        outline-offset: 3px;
+    }
+    
+    .btn-primary:focus,
+    .btn-secondary:focus,
+    .btn-ghost:focus {
+        outline-width: 3px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+.neo-grid-bg {
+    background-image: 
+        linear-gradient(rgba(198, 255, 52, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(198, 255, 52, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+.dark .neo-grid-bg {
+    background-image: 
+        linear-gradient(rgba(198, 255, 52, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(198, 255, 52, 0.06) 1px, transparent 1px);
+}
+
+/* Hero title line spacing - responsive */
+.space-y-component-normal h1 {
+    line-height: 1.2;  /* Mobile */
+}
+
+@media (min-width: 768px) {
+    .space-y-component-normal h1 {
+        line-height: 1.5;  /* Desktop */
+    }
+}
+
+
+

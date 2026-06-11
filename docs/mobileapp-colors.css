@@ -1,0 +1,72 @@
+/* =============================================
+   SZAFIT - COLOR PALETTE
+   Mobile App Colors Reference
+   ============================================= */
+
+/* ==================== MAIN COLORS (Green) ==================== */
+
+/* Primary Green Dark */
+--primary-green-dark: #08B892;
+
+/* Primary Green Main */
+--primary-green: #01D09A;
+
+/* Primary Green Light */
+--primary-green-light: #6ADD87;
+
+/* Primary Green Lighter */
+--primary-green-lighter: #99F6B0;
+
+/* Primary Green Pale */
+--primary-green-pale: #95F2DA;
+
+/* Primary Green Ultra Light */
+--primary-green-ultra-light: #E2FFF4;
+
+/* Green Accent */
+--accent-green: #C6FF34;
+
+/* Green Gradient */
+--gradient-green: linear-gradient(270deg, #4FDB74 0%, #13BC95 100%);
+
+
+/* ==================== NEUTRAL COLORS (Grays) ==================== */
+
+/* Neutral Dark 1 */
+--neutral-dark-1: #212831;
+
+/* Neutral Dark 2 */
+--neutral-dark-2: #3B434D;
+
+/* Neutral Gray */
+--neutral-gray: #7E7E7E;
+
+/* Neutral Gray Light */
+--neutral-gray-light: #B1B1B1;
+
+/* Neutral Light */
+--neutral-light: #D4D5D4;
+
+/* Neutral Lightest */
+--neutral-lightest: #F5F6F5;
+
+
+/* ==================== SECONDARY COLORS (Red) ==================== */
+
+/* Secondary Red Dark 1 */
+--secondary-red-dark-1: #520F12;
+
+/* Secondary Red Dark 2 */
+--secondary-red-dark-2: #7E161A;
+
+/* Secondary Red Main */
+--secondary-red: #CF3033;
+
+/* Secondary Red Light */
+--secondary-red-light: #FE5356;
+
+/* Secondary Red Lighter */
+--secondary-red-lighter: #FC8782;
+
+/* Secondary Red Pale */
+--secondary-red-pale: #F9C8CA;

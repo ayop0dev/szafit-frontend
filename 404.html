@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="الصفحة غير موجودة.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' data: https:; connect-src 'self' https://api.szafit.com https://z.szafit.com https://images.unsplash.com; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>404 - الصفحة غير موجودة | SZA Fit</title>
+    
+    <style>
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-display: swap;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="styles/tailwind.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/fonts/saudi-riyal-font/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="min-h-screen bg-neutral-lightest text-neutral-dark-1 dark:bg-neutral-dark-1 dark:text-neutral-lightest flex items-center justify-center">
+    <div class="pointer-events-none fixed inset-0 -z-10 neo-grid-bg opacity-15 dark:opacity-30"></div>
+
+    <main class="container-page">
+        <section class="text-center space-y-component-spacious py-section-spacious">
+            <div class="space-y-4">
+                <p class="text-7xl font-black text-primary-green">404</p>
+                <h1 class="text-4xl font-black">الصفحة غير موجودة</h1>
+                <p class="text-neutral-gray-light text-lg">عذراً، الصفحة التي تبحث عنها غير متاحة الآن.</p>
+            </div>
+
+            <div class="flex flex-col gap-4 sm:flex-row justify-center">
+                <a href="index.html" class="btn-primary">العودة للصفحة الرئيسية</a>
+                <a href="products.html" class="btn-ghost">استكشف البرامج</a>
+            </div>
+
+            <div class="mt-component-spacious">
+                <p class="text-sm text-neutral-gray-light mb-4">الصفحات الرئيسية:</p>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="index.html" class="text-primary-green hover:underline">الصفحة الرئيسية</a></li>
+                    <li><a href="products.html" class="text-primary-green hover:underline">البرامج</a></li>
+                    <li><a href="about.html" class="text-primary-green hover:underline">عن SZA Fit</a></li>
+                    <li><a href="contact.html" class="text-primary-green hover:underline">اتصل بنا</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <!-- i18next Library & Backend (for bilingual support) -->
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.6/dist/umd/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next-http-backend@2.4.2/dist/umd/i18nextHttpBackend.min.js"></script>
+    
+    <!-- i18n Configuration -->
+    <script src="scripts/i18n-config.js"></script>
+    
+    <!-- App Scripts -->
+    <script type="module" src="scripts/index.js"></script>
+</body>
+</html>

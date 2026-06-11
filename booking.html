@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="احجز برنامجك اليوم والبدء في رحلتك للياقة.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' data: https:; connect-src 'self' https://api.szafit.com https://z.szafit.com https://images.unsplash.com; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>الحجز | SZA Fit</title>
+    
+    <style>
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-display: swap;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="styles/tailwind.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/fonts/saudi-riyal-font/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="min-h-screen bg-neutral-lightest text-neutral-dark-1 dark:bg-neutral-dark-1 dark:text-neutral-lightest">
+    <div class="pointer-events-none fixed inset-0 -z-10 neo-grid-bg opacity-15 dark:opacity-30"></div>
+
+    <nav class="fixed top-0 z-50 w-full border-b border-neutral-light/60 bg-white/80 backdrop-blur-xl dark:border-white/5 dark:bg-neutral-dark-1/80">
+        <div class="container-page nav-main flex items-center justify-between py-5">
+            <div class="flex items-center gap-3 nav-brand">
+                <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-green/15 text-primary-green">
+                    <i class="fas fa-dumbbell text-lg"></i>
+                </div>
+                <div>
+                    <a href="index.html" class="nav-brand-title text-lg font-black tracking-[0.15em] text-neutral-dark-1 dark:text-neutral-lightest">SZA FIT</a>
+                    <p class="nav-brand-tagline text-xs uppercase tracking-[0.4em] text-neutral-gray-light">Elite Coaching</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 nav-actions">
+                <button id="langToggle" class="btn-ghost">EN</button>
+                <button id="themeToggle" class="btn-ghost">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24">
+        <section class="container-page py-section-spacious">
+            <div class="max-w-2xl mx-auto space-y-component-spacious">
+                <div class="text-center">
+                    <h1 class="text-5xl font-black">احجز البرنامج</h1>
+                    <p class="text-neutral-gray-light mt-component-normal">ابدأ رحلتك نحو جسم أحلامك</p>
+                </div>
+
+                <div class="card">
+                    <form id="checkoutForm" class="space-y-component-normal">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">الاسم الكامل</label>
+                            <input type="text" class="w-full px-4 py-3 rounded-lg border border-neutral-light/20 bg-white/5 dark:bg-white/10" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">البريد الإلكتروني</label>
+                            <input type="email" class="w-full px-4 py-3 rounded-lg border border-neutral-light/20 bg-white/5 dark:bg-white/10" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">رقم الجوال</label>
+                            <input type="tel" class="w-full px-4 py-3 rounded-lg border border-neutral-light/20 bg-white/5 dark:bg-white/10" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">اختر البرنامج</label>
+                            <select class="w-full px-4 py-3 rounded-lg border border-neutral-light/20 bg-white/5 dark:bg-white/10" required>
+                                <option value="">اختر برنامجاً</option>
+                                <option value="challenge">برنامج Challenge</option>
+                                <option value="vip">برنامج VIP</option>
+                                <option value="burn">برنامج Burn</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-primary-green/10 border border-primary-green/30 rounded-lg p-4">
+                            <p class="text-sm mb-2">السعر الشهري</p>
+                            <p class="text-2xl font-black text-primary-green">999 ر.س</p>
+                        </div>
+
+                        <button type="submit" class="btn-primary w-full">المتابعة إلى الدفع</button>
+                        <p class="text-xs text-center text-neutral-gray-light">سيتم تحويلك إلى صفحة الدفع الآمنة</p>
+                    </form>
+                </div>
+
+                <div class="text-center text-sm text-neutral-gray-light">
+                    <p>لديك استفسارات؟ <a href="contact.html" class="text-primary-green hover:underline">اتصل بنا</a></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-neutral-light/20 bg-neutral-dark-1/50 dark:bg-neutral-dark-1/80 py-section-normal">
+        <div class="container-page text-center text-sm text-neutral-gray-light">
+            <p>&copy; 2026 SZA Fit. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="scripts/index.js"></script>
+</body>
+</html>

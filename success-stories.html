@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="قصص نجاح من عملائنا الذين حققوا نتائج رائعة.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https: data:; font-src 'self' data: https:; connect-src 'self' https://api.szafit.com https://z.szafit.com https://images.unsplash.com; base-uri 'self';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>قصص النجاح | SZA Fit</title>
+    
+    <style>
+        @font-face {
+            font-family: 'Changa';
+            src: url('assets/fonts/Changa/static/Changa-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-display: swap;
+        }
+    </style>
+    
+    <link rel="stylesheet" href="styles/tailwind.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="assets/fonts/saudi-riyal-font/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body class="min-h-screen bg-neutral-lightest text-neutral-dark-1 dark:bg-neutral-dark-1 dark:text-neutral-lightest">
+    <div class="pointer-events-none fixed inset-0 -z-10 neo-grid-bg opacity-15 dark:opacity-30"></div>
+
+    <nav class="fixed top-0 z-50 w-full border-b border-neutral-light/60 bg-white/80 backdrop-blur-xl dark:border-white/5 dark:bg-neutral-dark-1/80">
+        <div class="container-page nav-main flex items-center justify-between py-5">
+            <div class="flex items-center gap-3 nav-brand">
+                <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary-green/15 text-primary-green">
+                    <i class="fas fa-dumbbell text-lg"></i>
+                </div>
+                <div>
+                    <a href="index.html" class="nav-brand-title text-lg font-black tracking-[0.15em] text-neutral-dark-1 dark:text-neutral-lightest">SZA FIT</a>
+                    <p class="nav-brand-tagline text-xs uppercase tracking-[0.4em] text-neutral-gray-light">Elite Coaching</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 nav-actions">
+                <button id="langToggle" class="btn-ghost">EN</button>
+                <button id="themeToggle" class="btn-ghost">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <a href="booking.html" class="btn-primary hidden lg:inline-flex">احجز الآن</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24">
+        <section class="container-page py-section-spacious">
+            <div class="text-center mb-section-spacious">
+                <h1 class="text-5xl font-black">قصص النجاح</h1>
+                <p class="text-neutral-gray-light mt-component-normal">نتائج حقيقية من عملاء حققوا أهدافهم</p>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <div class="card">
+                    <div class="mb-4">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=300&q=80" class="w-full h-48 object-cover rounded-lg" alt="قصة نجاح">
+                    </div>
+                    <h3 class="font-bold mb-2">راشد العتيبي</h3>
+                    <p class="text-sm text-primary-green mb-2">برنامج Challenge</p>
+                    <p class="text-sm text-neutral-gray-light">"خطة دقيقة، نتائج ملموسة خلال أسابيع. الفريق محترف بكل التفاصيل."</p>
+                </div>
+
+                <div class="card">
+                    <div class="mb-4">
+                        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&h=300&q=80" class="w-full h-48 object-cover rounded-lg" alt="قصة نجاح">
+                    </div>
+                    <h3 class="font-bold mb-2">سارة المالكي</h3>
+                    <p class="text-sm text-primary-green mb-2">برنامج VIP</p>
+                    <p class="text-sm text-neutral-gray-light">"التزام عالي، متابعة شخصية، والنتائج تجاوزت توقعاتي."</p>
+                </div>
+
+                <div class="card">
+                    <div class="mb-4">
+                        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&h=300&q=80" class="w-full h-48 object-cover rounded-lg" alt="قصة نجاح">
+                    </div>
+                    <h3 class="font-bold mb-2">نورة القحطاني</h3>
+                    <p class="text-sm text-primary-green mb-2">برنامج After Pregnancy</p>
+                    <p class="text-sm text-neutral-gray-light">"برنامج آمن وراقي. التوازن مثالي بين الأداء والصحة."</p>
+                </div>
+            </div>
+
+            <div class="mt-section-spacious text-center">
+                <a href="booking.html" class="btn-primary">كن جزءاً من قصص النجاح</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-neutral-light/20 bg-neutral-dark-1/50 dark:bg-neutral-dark-1/80 py-section-normal">
+        <div class="container-page text-center text-sm text-neutral-gray-light">
+            <p>&copy; 2026 SZA Fit. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="scripts/index.js"></script>
+</body>
+</html>
