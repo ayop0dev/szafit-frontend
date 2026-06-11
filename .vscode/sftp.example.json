@@ -1,0 +1,26 @@
+{
+  "name": "SZAFIT",
+  "host": "YOUR_SERVER_IP",
+  "protocol": "sftp",
+  "port": 65002,
+  "username": "YOUR_SFTP_USERNAME",
+  "password": "YOUR_SFTP_PASSWORD",
+  "remotePath": "/home/YOUR_USERNAME/domains/szafit.com/public_html",
+  "localPath": "./",
+  "uploadOnSave": false,
+  "useTempFile": false,
+  "openSsh": false,
+  "ignore": [
+    ".vscode/**",
+    ".claude/**",
+    "docs/**",
+    "_pre-used/**",
+    "node_modules/**",
+    "src/**",
+    ".env",
+    ".env.*",
+    "IMPLEMENTATION_LOG.md",
+    "MIGRATION_CHECKLIST.md",
+    "DEPLOYMENT_CHECKLIST.md"
+  ]
+}
