@@ -25,7 +25,7 @@ After each completed module:
 
 | # | Module | Status | Started | Completed | Notes |
 |---|--------|--------|---------|-----------|-------|
-| 1 | Safety Setup | 🟡 PARTIAL | — | — | Git + branch done; .gitignore incomplete; creds rotated by owner; history cleanup recommended |
+| 1 | Safety Setup | ✅ COMPLETE | 2026-06-11 | 2026-06-11 | .gitignore complete; backup branch created; sftp.example.json added; node_modules + compiled CSS un-tracked |
 | 2 | Documentation Cleanup | ⬜ NOT STARTED | — | — | — |
 | 3 | Checkout Fix (WC Auth Proxy) | ⬜ NOT STARTED | — | — | WC credentials needed first |
 | 4 | ACF Field Mapping | ⬜ NOT STARTED | — | — | WP admin access needed |
@@ -66,45 +66,52 @@ After each completed module:
 
 ## Module 1 — Safety Setup
 
-**Target state:** Clean git baseline, no secrets tracked, auto-upload disabled.
+**Target state:** Clean git baseline, no secrets tracked, auto-upload disabled.  
+**Status:** ✅ COMPLETE — 2026-06-11  
+**Commit:** `48bf32a`
 
 ### Work Log
 
-*(To be filled in when module is executed)*
+**Files changed:**
 
-### Pre-Conditions Required Before Starting
-- [ ] Confirm `backup/pre-astro-migration` branch needed
+| File | Change |
+|------|--------|
+| `.gitignore` | Expanded: added `node_modules/`, `dist/`, `.astro/`, `.env`, `.env.*`, `!.env.example`, `.claude/`, `styles/tailwind.css`, `api/config.php`, `docs/_archive/`, `screenshots/_raw/`, `.DS_Store`, `Thumbs.db` |
+| `.vscode/sftp.example.json` | Created: sanitized SFTP config template (no credentials; `uploadOnSave: false`; extended ignore list) |
+| `IMPLEMENTATION_LOG.md` | Added (this file) |
+| `MIGRATION_CHECKLIST.md` | Added |
+| `DEPLOYMENT_CHECKLIST.md` | Added |
+| `styles/tailwind.css` | Removed from git tracking (`git rm --cached`) — file still on disk |
+| `node_modules/` (629 files) | Removed from git tracking (`git rm -r --cached`) — files still on disk |
 
-### Files to Change
-- `.gitignore` — add missing entries
-- `.vscode/sftp.json` — credentials already rotated by owner; old password invalidated
-- `.vscode/sftp.example.json` — create sanitized template
-
-### Commands to Run (When Approved)
+**Commands run:**
 ```bash
-# Add full .gitignore content
-# Create backup branch
 git branch backup/pre-astro-migration main
+git rm --cached styles/tailwind.css
+git rm -r --cached node_modules/ --quiet
+git add .gitignore .vscode/sftp.example.json IMPLEMENTATION_LOG.md MIGRATION_CHECKLIST.md DEPLOYMENT_CHECKLIST.md
+git commit -m "chore(safety): complete Module 1 — safety setup"
+```
 
-# Remove compiled CSS from tracking if tracked
-git rm --cached styles/tailwind.css 2>/dev/null || true
-
-# Verify sftp.json is not tracked
-git status
-
-# Verify no secrets in staging area
-git diff --cached
+**Verifications run:**
+```bash
+git ls-files .vscode/sftp.json        # → empty (not tracked ✅)
+git ls-files styles/tailwind.css      # → empty (not tracked ✅)
+git ls-files node_modules/ | wc -l    # → 0 (not tracked ✅)
+grep "uploadOnSave" .vscode/sftp.json # → "uploadOnSave": false ✅
+git branch -a                         # → backup/pre-astro-migration present ✅
 ```
 
 ### Result
-*(Pending)*
+✅ PASS — all Module 1 acceptance criteria met.
 
 ### Known Issues
 - SFTP password in `af9f50b` (initial commit) — old password is already invalidated by owner; history cleanup is recommended security best practice but is not a blocker for Module 1 or any subsequent module; tracked under Module 9
 - Remote (`origin`) exists; if history cleanup is performed in Module 9, a coordinated force-push will be required at that point
+- `backup/pre-astro-migration` is local only — not pushed to remote (intentional; it is a local safety net)
 
 ### Next Action After Completion
-→ Proceed to Module 2 (Documentation Cleanup)
+→ Awaiting approval to proceed to Module 2 (Documentation Cleanup)
 
 ---
 

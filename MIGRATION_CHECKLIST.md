@@ -28,28 +28,28 @@
 
 ### 1.1 Git Baseline
 
-- [ ] `backup/pre-astro-migration` branch created from `main`
+- [x] `backup/pre-astro-migration` branch created from `main` ✅
   ```bash
   git branch backup/pre-astro-migration main
   ```
-- [ ] `.gitignore` updated with all required entries:
-  - [ ] `node_modules/`
-  - [ ] `dist/`
-  - [ ] `.astro/`
-  - [ ] `.env`
-  - [ ] `.env.*` (with `!.env.example` exception)
-  - [ ] `.vscode/sftp.json`
-  - [ ] `.claude/`
-  - [ ] `docs/_archive/`
-  - [ ] `styles/tailwind.css` (compiled output — regenerated at build)
-  - [ ] `api/config.php` (will hold WC credentials)
+- [x] `.gitignore` updated with all required entries: ✅
+  - [x] `node_modules/`
+  - [x] `dist/`
+  - [x] `.astro/`
+  - [x] `.env`
+  - [x] `.env.*` (with `!.env.example` exception)
+  - [x] `.vscode/sftp.json`
+  - [x] `.claude/`
+  - [x] `docs/_archive/`
+  - [x] `styles/tailwind.css` (compiled output — regenerated at build)
+  - [x] `api/config.php` (will hold WC credentials)
 
 ### 1.2 SFTP Safety
 
-- [ ] `uploadOnSave: false` confirmed in `.vscode/sftp.json` (already done)
-- [ ] `.vscode/sftp.example.json` created without credentials
+- [x] `uploadOnSave: false` confirmed in `.vscode/sftp.json` ✅
+- [x] `.vscode/sftp.example.json` created without credentials ✅
 - [x] SFTP password rotated on Hostinger panel — completed by owner; old password invalidated ✅
-- [ ] `.vscode/sftp.json` confirmed absent from git tracking (`git ls-files .vscode/sftp.json` returns empty)
+- [x] `.vscode/sftp.json` confirmed absent from git tracking (`git ls-files .vscode/sftp.json` returns empty) ✅
 
 ### 1.3 Credential Purge from Git History
 
