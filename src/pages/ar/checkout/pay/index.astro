@@ -1,0 +1,208 @@
+---
+/**
+ * TODO (Module 6.3): Implement POST /api/pay-order proxy endpoint.
+ * Payload:   { order_id: string, key: string, pay_for_order?: string }
+ * Response:  { success: boolean, redirect_url?: string, message?: string }
+ * If redirect_url is returned the client redirects there (payment gateway).
+ * Until the endpoint exists, failures surface the WhatsApp support link.
+ */
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import { getSiteSettings } from '../../../../lib/content';
+
+const currentPath = Astro.url.pathname;
+const siteSettings = getSiteSettings();
+const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g, '')}`;
+---
+
+<BaseLayout lang="ar" title="إتمام الدفع — SZAFIT" currentPath={currentPath} showNav>
+  <main class="flex-1 bg-surface-soft">
+    <div class="max-w-container mx-auto px-6 py-16 lg:py-24" dir="rtl">
+      <div class="max-w-xl mx-auto">
+
+        <!-- Page header -->
+        <div class="text-center mb-10">
+          <div class="flex justify-center mb-5">
+            <div class="w-16 h-16 rounded-2xl bg-primary/20 border border-primary/30 flex items-center justify-center">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"
+                   class="text-accent" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5z"/>
+              </svg>
+            </div>
+          </div>
+          <span class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-sm font-semibold inline-block mb-4">
+            إتمام الدفع
+          </span>
+          <h1 class="text-2xl lg:text-3xl font-bold text-text mb-2">أكمل دفعتك</h1>
+          <p class="text-text-muted text-sm leading-relaxed">
+            طلبك في انتظار إتمام الدفع. اضغط أدناه للمتابعة.
+          </p>
+        </div>
+
+        <!-- Invalid link state -->
+        <div id="invalid-state" class="hidden">
+          <div class="bg-surface border border-border rounded-2xl p-8 text-center shadow-card-resting">
+            <div class="w-12 h-12 rounded-full bg-error-bg flex items-center justify-center mx-auto mb-4">
+              <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+                   class="text-error-text" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <path stroke-linecap="round" d="M12 8v4m0 4h.01"/>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-text mb-2">رابط الدفع غير صالح</h2>
+            <p class="text-sm text-text-muted mb-6 leading-relaxed">
+              لم نتمكن من تحديد الطلب المرتبط بهذا الرابط. تواصل مع الدعم وسنساعدك فوراً.
+            </p>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-primary-hover transition-all hover:-translate-y-0.5"
+            >
+              تواصل مع الدعم
+            </a>
+          </div>
+        </div>
+
+        <!-- Pay card (shown when order_id + key are present) -->
+        <div id="pay-state" class="hidden">
+
+          <!-- Order summary card -->
+          <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-card-resting mb-6">
+            <div class="px-6 py-4 border-b border-border bg-surface-soft/60">
+              <p class="text-xs text-text-muted font-medium uppercase tracking-wide">تفاصيل الطلب</p>
+            </div>
+            <div class="px-6 py-5 flex items-center justify-between gap-4">
+              <div>
+                <p class="text-sm text-text-muted mb-1">رقم الطلب</p>
+                <p id="order-id-display" class="text-xl font-bold text-text font-mono" dir="ltr">—</p>
+              </div>
+              <div class="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                     class="text-accent" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- Error banner -->
+          <div id="pay-error" class="hidden mb-4 p-4 bg-error-bg border border-error-border/30 rounded-xl text-sm text-error-text text-center leading-relaxed"></div>
+
+          <!-- Pay button -->
+          <button
+            id="pay-btn"
+            type="button"
+            class="w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-base hover:bg-primary-hover transition-all hover:-translate-y-0.5 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 mb-4"
+          >
+            <span id="pay-label">إتمام الدفع الآن</span>
+            <span id="pay-loading" class="hidden">جارٍ المعالجة...</span>
+          </button>
+
+          <!-- Security note -->
+          <div class="flex items-center justify-center gap-2 text-xs text-text-muted">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24" class="shrink-0">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+            </svg>
+            دفع آمن ومشفر
+          </div>
+
+          <!-- Success state -->
+          <div id="pay-success" class="hidden text-center py-6">
+            <div class="w-14 h-14 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5"
+                   class="text-accent" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/>
+              </svg>
+            </div>
+            <h2 class="text-lg font-bold text-text mb-2">تم استلام الدفعة بنجاح</h2>
+            <p class="text-sm text-text-muted mb-6">سيصلك تأكيد عبر البريد الإلكتروني قريباً.</p>
+            <a href="/ar/" class="inline-flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-primary-hover transition-all hover:-translate-y-0.5">
+              العودة للرئيسية
+            </a>
+          </div>
+
+        </div>
+
+        <!-- Support row (always visible) -->
+        <p class="text-center text-xs text-text-muted mt-6">
+          مشكلة في الدفع؟
+          <a href={whatsappHref} target="_blank" rel="noopener noreferrer"
+             class="text-accent font-medium hover:underline">تواصل مع الدعم</a>
+        </p>
+
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    var params      = new URLSearchParams(window.location.search);
+    var orderId     = params.get('order_id')     || '';
+    var key         = params.get('key')          || '';
+    var payForOrder = params.get('pay_for_order') || '';
+
+    var invalidEl = document.getElementById('invalid-state');
+    var payEl     = document.getElementById('pay-state');
+
+    if (!orderId || !key) {
+      if (invalidEl) invalidEl.classList.remove('hidden');
+      return;
+    }
+
+    // Show order ID to user
+    var display = document.getElementById('order-id-display');
+    if (display) display.textContent = '#' + orderId;
+
+    if (payEl) payEl.classList.remove('hidden');
+
+    var payBtn     = document.getElementById('pay-btn');
+    var payLabel   = document.getElementById('pay-label');
+    var payLoading = document.getElementById('pay-loading');
+    var payError   = document.getElementById('pay-error');
+    var paySuccess = document.getElementById('pay-success');
+    var payCard    = payEl ? payEl.querySelector('button') : null;
+
+    if (!payBtn) return;
+
+    payBtn.addEventListener('click', function () {
+      if (payError)   payError.classList.add('hidden');
+      payBtn.disabled = true;
+      if (payLabel)   payLabel.classList.add('hidden');
+      if (payLoading) payLoading.classList.remove('hidden');
+
+      // TODO: Replace '/api/pay-order' with the live proxy endpoint once available.
+      // Expected payload: { order_id, key, pay_for_order }
+      // Expected response: { success: boolean, redirect_url?: string, message?: string }
+      fetch('/api/pay-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: orderId, key: key, pay_for_order: payForOrder }),
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data.redirect_url) {
+            window.location.href = data.redirect_url;
+          } else if (data.success) {
+            if (payBtn)     payBtn.classList.add('hidden');
+            if (paySuccess) paySuccess.classList.remove('hidden');
+          } else {
+            throw new Error(data.message || 'فشلت العملية');
+          }
+        })
+        .catch(function () {
+          payBtn.disabled = false;
+          if (payLabel)   payLabel.classList.remove('hidden');
+          if (payLoading) payLoading.classList.add('hidden');
+          if (payError) {
+            payError.textContent = 'تعذّر إتمام الدفع. تواصل مع الدعم عبر واتساب للمساعدة الفورية.';
+            payError.classList.remove('hidden');
+          }
+        });
+    });
+  });
+</script>

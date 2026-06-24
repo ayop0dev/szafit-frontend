@@ -23,6 +23,8 @@ styles/tailwind.css
 
 # PHP credentials (generated locally — not committed)
 api/config.php
+.szafit_wordpress/wp-config.php
+.szafit_wordpress/wp-config-local.php
 
 # Docs archive
 docs/_archive/
