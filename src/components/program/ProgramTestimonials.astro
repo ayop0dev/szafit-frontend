@@ -1,0 +1,78 @@
+---
+import type { Lang } from '../../types/wp';
+
+interface Props {
+    lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+    ar: {
+        title: "قصص نجاح من نفس البرنامج",
+        now: "الآن",
+        before: "قبل",
+        noImage: "صورة التحول غير متوفرة",
+        testimonials: [
+            {
+                name: "سارة المالكي",
+                meta: "10 أسابيع في البرنامج",
+                quote: "\"التزام عالي، متابعة شخصية، والنتائج تجاوزت توقعاتي بكثير. البرنامج غير حياتي بالكامل وعلمني كيف أتمرن بذكاء.\"",
+            },
+            {
+                name: "خالد السالم",
+                meta: "12 أسبوع في البرنامج",
+                quote: "\"خسرت الدهون وبنيت كتلة عضلية صافية. خطة الأكل كانت ممتازة وما حسيت بأي حرمان طوال فترة البرنامج.\"",
+            }
+        ]
+    },
+    en: {
+        title: "Success Stories from this Program",
+        now: "Now",
+        before: "Before",
+        noImage: "Transformation image unavailable",
+        testimonials: [
+            {
+                name: "Sarah Al-Malki",
+                meta: "10 weeks in the program",
+                quote: "\"High commitment, personal tracking, and the results exceeded my expectations. The program completely changed my life and taught me how to train smart.\"",
+            },
+            {
+                name: "Khalid Al-Salem",
+                meta: "12 weeks in the program",
+                quote: "\"I lost fat and built pure muscle mass. The nutrition plan was excellent and I didn't feel deprived at all during the program.\"",
+            }
+        ]
+    }
+};
+
+const c = lang === 'ar' ? copy.ar : copy.en;
+---
+<!-- Testimonials Slider -->
+<section class="max-w-container mx-auto px-6 py-16 fade-target overflow-hidden" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <h2 class="text-4xl lg:text-5xl font-black text-text text-center mb-12">{c.title}</h2>
+
+    <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 hide-scrollbar">
+        {c.testimonials.map(t => (
+            <div class="snap-start shrink-0 w-[300px] lg:w-[400px] bg-surface rounded-2xl shadow-glow-soft overflow-hidden border border-border">
+                <div class="h-[200px] bg-base relative">
+                    <!-- Fallback shown when images are missing; covered by images when they load -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center gap-3" aria-hidden="true">
+                        <div class="w-10 h-10 rounded-full bg-primary-green/15 flex items-center justify-center">
+                            <span class="text-primary text-lg font-bold leading-none">◑</span>
+                        </div>
+                        <p class="text-xs text-text-muted text-center px-6">{c.noImage}</p>
+                    </div>
+                    <!-- Labels always on top -->
+                    <div class="absolute top-2 right-2 bg-surface/90 text-text px-2 py-1 rounded text-xs font-bold shadow z-20">{c.now}</div>
+                    <div class="absolute top-2 left-2 bg-surface/90 text-text px-2 py-1 rounded text-xs font-bold shadow z-20">{c.before}</div>
+                </div>
+                <div class="p-6">
+                    <h4 class="font-bold text-lg text-text mb-1">{t.name}</h4>
+                    <p class="text-sm text-text-faint mb-3">{t.meta}</p>
+                    <p class="text-text-muted text-sm leading-relaxed">{t.quote}</p>
+                </div>
+            </div>
+        ))}
+    </div>
+</section>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TextPageTemplate from '../../../components/pages/TextPageTemplate.astro';
+import { getPageContent } from '../../../lib/content';
+
+const currentPath = Astro.url.pathname;
+const pageContent = getPageContent('terms');
+const titleEn = (pageContent as any).titleEn;
+---
+
+<BaseLayout lang="en" title={`${titleEn} — SZAFIT`} currentPath={currentPath} showNav>
+  <TextPageTemplate lang="en" page="terms" />
+</BaseLayout>

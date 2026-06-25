@@ -1,0 +1,43 @@
+---
+import type { Lang } from '../../types/wp';
+
+interface Props {
+    lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+    ar: [
+        { label: "تخصيص كامل", icon: '<path d="M20 6L9 17l-5-5"/>' },
+        { label: "متابعة دقيقة", icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' },
+        { label: "نتائج سريعة", icon: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>' },
+        { label: "طاقة عالية", icon: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' }
+    ],
+    en: [
+        { label: "Fully Custom", icon: '<path d="M20 6L9 17l-5-5"/>' },
+        { label: "Precise Tracking", icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' },
+        { label: "Fast Results", icon: '<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>' },
+        { label: "High Energy", icon: '<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>' }
+    ]
+};
+
+const items = lang === 'ar' ? copy.ar : copy.en;
+---
+<section class="max-w-[1000px] mx-auto px-6 -mt-8 relative z-10 fade-target delay-100">
+    <div class="bg-surface rounded-2xl shadow-glow-soft p-4 lg:p-6 flex flex-wrap lg:flex-nowrap justify-between items-center gap-4 lg:gap-8 border border-border">
+        {items.map((item, index) => (
+            <>
+                <div class="flex items-center gap-3 w-[calc(50%-1rem)] lg:w-auto">
+                    <div class="text-accent bg-primary-green/10 p-2.5 rounded-full">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" set:html={item.icon} />
+                    </div>
+                    <span class="font-bold text-neutral-dark-1 text-sm lg:text-base">{item.label}</span>
+                </div>
+                {index < items.length - 1 && (
+                    <div class="w-px h-10 bg-border hidden lg:block"></div>
+                )}
+            </>
+        ))}
+    </div>
+</section>

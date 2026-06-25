@@ -1,0 +1,399 @@
+---
+import type { Lang } from '../../types/wp';
+import { getProgramsSorted, getLocalizedProgram } from '../../lib/content';
+import { formatPrice } from '../../utils/i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+// Server-side mapping to pass down securely to the client without WooCommerce keys.
+const rawPrograms = getProgramsSorted();
+const clientPrograms = rawPrograms.map(p => {
+  const loc = getLocalizedProgram(p, lang);
+  return {
+    slug: p.slug,
+    productId: p.productId,
+    title: loc.title,
+    shortDescription: loc.shortDescription,
+    image: loc.image,
+    priceLabel: formatPrice(p.price, p.currency, lang)
+  };
+});
+
+const CHECKOUT_ENDPOINT = 'https://z.szafit.com/wp-json/szafit/v1/checkout/create-order';
+
+const copy = {
+  ar: {
+    heading: 'إتمام الطلب',
+    programDetails: 'تفاصيل البرنامج',
+    price: 'السعر',
+    notFoundTitle: 'البرنامج غير موجود',
+    notFoundDesc: 'لم يتم العثور على البرنامج المطلوب، يرجى العودة لصفحة البرامج.',
+    backToPrograms: 'العودة للبرامج',
+    firstName: 'الاسم الأول *',
+    firstNamePlaceholder: 'سارة',
+    firstNameError: 'الاسم الأول مطلوب',
+    phone: 'رقم الجوال *',
+    phonePlaceholder: '+966 5X XXX XXXX',
+    phoneError: 'رقم الجوال مطلوب',
+    email: 'البريد الإلكتروني (اختياري)',
+    emailPlaceholder: 'example@email.com',
+    emailError: 'البريد الإلكتروني غير صحيح',
+    submit: 'تأكيد الطلب',
+    submitting: 'جارٍ الإرسال…',
+    codNote: 'الدفع عند الاستلام · آمن 100%',
+    serverError: 'حدث خطأ. حاول مجددًا.',
+    invalidResponse: 'استجابة غير متوقعة من الخادم.',
+    missingImage: 'صورة البرنامج غير متوفرة',
+    noscriptMessage: 'تحتاج صفحة الدفع إلى تفعيل JavaScript لإكمال الطلب. يمكنك العودة إلى البرامج أو التواصل معنا عبر واتساب.',
+    loadingMessage: 'جاري تجهيز ملخص الطلب...'
+  },
+  en: {
+    heading: 'Complete Order',
+    programDetails: 'Program Details',
+    price: 'Price',
+    notFoundTitle: 'Program Not Found',
+    notFoundDesc: 'The requested program was not found, please return to the programs page.',
+    backToPrograms: 'Back to Programs',
+    firstName: 'First Name *',
+    firstNamePlaceholder: 'Sarah',
+    firstNameError: 'First name is required',
+    phone: 'Phone Number *',
+    phonePlaceholder: '+966 5X XXX XXXX',
+    phoneError: 'Phone number is required',
+    email: 'Email (optional)',
+    emailPlaceholder: 'example@email.com',
+    emailError: 'Invalid email address',
+    submit: 'Confirm Order',
+    submitting: 'Submitting…',
+    codNote: 'Cash on Delivery · 100% Secure',
+    serverError: 'An error occurred. Please try again.',
+    invalidResponse: 'Unexpected response from server.',
+    missingImage: 'Program image unavailable',
+    noscriptMessage: 'Checkout requires JavaScript to complete your order. You can return to programs or contact us on WhatsApp.',
+    loadingMessage: 'Preparing your order summary...'
+  }
+};
+
+const c = isAr ? copy.ar : copy.en;
+const programsArchiveUrl = `/${lang}/programs/`;
+const formId = "checkout-form-container";
+---
+
+<noscript>
+  <div class="max-w-5xl mx-auto py-12 lg:py-20 px-6">
+    <div class="text-center py-20 bg-surface rounded-2xl border border-secondary-red-dark-2/50 shadow-glow-soft">
+      <h2 class="text-2xl font-bold text-text mb-4">JavaScript Required</h2>
+      <p class="text-text-muted mb-8 max-w-lg mx-auto">{c.noscriptMessage}</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={programsArchiveUrl} class="bg-primary text-neutral-dark-1 px-8 py-3 rounded-xl text-sm font-bold hover:bg-primary-green-light transition-colors shadow-glow-soft">
+          {c.backToPrograms}
+        </a>
+        <a href="https://wa.me/+966550150445" target="_blank" rel="noopener noreferrer" class="border border-border text-text-muted px-8 py-3 rounded-xl text-sm font-bold hover:text-white hover:border-neutral-gray-light transition-colors">
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+</noscript>
+
+<div id="checkout-root" class="max-w-5xl mx-auto py-12 lg:py-20 px-6">
+  
+  <!-- Loading State -->
+  <div id="checkout-loading-state" class="text-center py-32 bg-surface rounded-2xl border border-border shadow-glow-soft">
+    <div class="w-10 h-10 border-4 border-border border-t-primary rounded-full animate-spin mx-auto mb-6"></div>
+    <p class="text-text-muted text-lg">{c.loadingMessage}</p>
+  </div>
+
+  <!-- Empty / Not Found State -->
+  <div id="checkout-empty-state" class="hidden text-center py-20 bg-surface rounded-2xl border border-border shadow-glow-soft">
+    <h2 class="text-2xl font-bold text-text mb-4">{c.notFoundTitle}</h2>
+    <p class="text-text-muted mb-8">{c.notFoundDesc}</p>
+    <a href={programsArchiveUrl} class="bg-primary text-neutral-dark-1 px-8 py-3 rounded-xl text-sm font-bold hover:bg-primary-green-light transition-colors shadow-glow-soft">
+      {c.backToPrograms}
+    </a>
+  </div>
+
+  <!-- Valid State -->
+  <div id="checkout-valid-state" class="hidden">
+    <div class="mb-10 text-center lg:text-start" dir={isAr ? 'rtl' : 'ltr'}>
+      <h1 class="text-3xl lg:text-4xl font-bold text-text mb-2">{c.heading}</h1>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start" dir={isAr ? 'rtl' : 'ltr'}>
+      
+      <!-- Order Summary (Left side on LTR, Right side on RTL) -->
+      <div class="lg:col-span-5 bg-surface rounded-[20px] p-6 lg:p-8 shadow-card-resting border border-border overflow-hidden order-2 lg:order-1">
+        <h2 class="text-xl font-bold text-text mb-6 pb-4 border-b border-border">{c.programDetails}</h2>
+        
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-base flex items-center justify-center mb-6">
+          <span class="text-primary-green/70 text-sm font-medium px-4 text-center" aria-hidden="true">
+            {c.missingImage}
+          </span>
+          <img 
+            id="summary-image" 
+            src="" 
+            alt="" 
+            class="absolute inset-0 w-full h-full object-cover z-10" 
+            onerror="this.style.display='none'"
+          />
+        </div>
+
+        <h3 id="summary-title" class="text-2xl font-bold text-text mb-2"></h3>
+        <p id="summary-desc" class="text-text-muted text-sm mb-6 leading-relaxed"></p>
+
+        <div class="pt-6 border-t border-border flex items-center justify-between">
+          <span class="text-text-muted font-medium">{c.price}</span>
+          <span id="summary-price" class="text-2xl font-bold text-accent" dir="ltr"></span>
+        </div>
+      </div>
+
+      <!-- Checkout Form (Right side on LTR, Left side on RTL) -->
+      <div class="lg:col-span-7 bg-surface rounded-[20px] p-6 lg:p-8 shadow-card-resting border border-border order-1 lg:order-2">
+        <form id={formId} novalidate class="flex flex-col gap-6">
+          
+          <div class="flex flex-col gap-2">
+            <label for="first_name" class="text-sm font-medium text-text-muted">{c.firstName}</label>
+            <input
+              id="first_name"
+              name="first_name"
+              type="text"
+              required
+              autocomplete="given-name"
+              placeholder={c.firstNamePlaceholder}
+              class="bg-base border border-border focus:border-primary-green rounded-xl px-4 py-3 text-text outline-none transition-colors"
+            />
+            <span id="error-first_name" class="text-secondary-red-light text-xs hidden" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="phone" class="text-sm font-medium text-text-muted">{c.phone}</label>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              required
+              autocomplete="tel"
+              placeholder={c.phonePlaceholder}
+              dir="ltr"
+              class="bg-base border border-border focus:border-primary-green rounded-xl px-4 py-3 text-text outline-none transition-colors text-left"
+            />
+            <span id="error-phone" class="text-secondary-red-light text-xs hidden" role="alert" aria-live="polite"></span>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="email" class="text-sm font-medium text-text-muted">{c.email}</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              placeholder={c.emailPlaceholder}
+              dir="ltr"
+              class="bg-base border border-border focus:border-primary-green rounded-xl px-4 py-3 text-text outline-none transition-colors text-left"
+            />
+            <span id="error-email" class="text-secondary-red-light text-xs hidden" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Global error -->
+          <div
+            id="global-error"
+            class="hidden text-secondary-red-light text-sm text-center rounded-xl bg-secondary-red-dark-1/30 border border-secondary-red-dark-2/50 px-4 py-3"
+            role="alert"
+            aria-live="polite"
+          ></div>
+
+          <div class="pt-4 flex flex-col gap-4 items-center">
+            <button
+              type="submit"
+              id="submit-btn"
+              class="bg-primary text-neutral-dark-1 font-bold rounded-xl px-8 py-4 hover:bg-primary-green-light transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed text-lg shadow-glow-soft"
+            >
+              {c.submit}
+            </button>
+            <p class="text-xs text-text-muted">
+              {c.codNote}
+            </p>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ clientPrograms, lang, formId, c, CHECKOUT_ENDPOINT }}>
+  const isAr = lang === 'ar';
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const requestedSlug = urlParams.get('program');
+  const requestedId = urlParams.get('product_id');
+
+  let selectedProgram = null;
+  if (requestedSlug) {
+    selectedProgram = clientPrograms.find(p => p.slug === requestedSlug);
+  } else if (requestedId) {
+    selectedProgram = clientPrograms.find(p => String(p.productId) === requestedId);
+  }
+
+  const rootEl = document.getElementById('checkout-root');
+  const loadingStateEl = document.getElementById('checkout-loading-state');
+  const emptyStateEl = document.getElementById('checkout-empty-state');
+  const validStateEl = document.getElementById('checkout-valid-state');
+  
+  if (!selectedProgram) {
+    if (loadingStateEl) loadingStateEl.classList.add('hidden');
+    if (emptyStateEl) emptyStateEl.classList.remove('hidden');
+  } else {
+    // Populate DOM
+    const imgEl = document.getElementById('summary-image');
+    if (imgEl) {
+      if (selectedProgram.image) {
+        imgEl.src = selectedProgram.image;
+        imgEl.alt = selectedProgram.title;
+      } else {
+        imgEl.style.display = 'none';
+      }
+    }
+    
+    const titleEl = document.getElementById('summary-title');
+    if (titleEl) titleEl.textContent = selectedProgram.title;
+    
+    const descEl = document.getElementById('summary-desc');
+    if (descEl) descEl.textContent = selectedProgram.shortDescription;
+    
+    const priceEl = document.getElementById('summary-price');
+    if (priceEl) priceEl.innerHTML = selectedProgram.priceLabel;
+
+    if (loadingStateEl) loadingStateEl.classList.add('hidden');
+    if (validStateEl) validStateEl.classList.remove('hidden');
+  }
+
+  // Container is already visible
+
+  // Form Logic
+  const form = document.getElementById(formId);
+  const submitBtn = document.getElementById('submit-btn');
+
+  function showFieldError(fieldId, message) {
+    const errEl = document.getElementById(`error-${fieldId}`);
+    if (errEl) {
+      errEl.textContent = message;
+      errEl.classList.remove('hidden');
+    }
+    const input = document.getElementById(fieldId);
+    if (input) {
+      input.classList.add('border-secondary-red-light');
+      input.classList.remove('border-border');
+    }
+  }
+
+  function showGlobalError(message) {
+    const el = document.getElementById('global-error');
+    if (el) {
+      el.textContent = message;
+      el.classList.remove('hidden');
+    }
+  }
+
+  function clearErrors() {
+    ['first_name', 'phone', 'email'].forEach(fieldId => {
+      const errEl = document.getElementById(`error-${fieldId}`);
+      if (errEl) {
+        errEl.textContent = '';
+        errEl.classList.add('hidden');
+      }
+      const input = document.getElementById(fieldId);
+      if (input) {
+        input.classList.remove('border-secondary-red-light');
+        input.classList.add('border-border');
+      }
+    });
+    const globalEl = document.getElementById('global-error');
+    if (globalEl) {
+      globalEl.textContent = '';
+      globalEl.classList.add('hidden');
+    }
+  }
+
+  function isValidEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearErrors();
+
+      const firstName = (form.elements.namedItem('first_name').value || '').trim();
+      const phone     = (form.elements.namedItem('phone').value || '').trim();
+      const email     = (form.elements.namedItem('email').value || '').trim();
+
+      let valid = true;
+      if (!firstName) {
+        showFieldError('first_name', c.firstNameError);
+        valid = false;
+      }
+      if (!phone) {
+        showFieldError('phone', c.phoneError);
+        valid = false;
+      }
+      if (email && !isValidEmail(email)) {
+        showFieldError('email', c.emailError);
+        valid = false;
+      }
+      if (!valid || !selectedProgram) return;
+
+      const payload = {
+        product_id: selectedProgram.productId,
+        quantity: 1,
+        locale: lang,
+        billing: {
+          first_name: firstName,
+          phone,
+          ...(email ? { email } : {}),
+        },
+      };
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = c.submitting;
+      }
+
+      try {
+        const res = await fetch(CHECKOUT_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        let data;
+        try {
+          data = await res.json();
+        } catch {
+          throw new Error(c.invalidResponse);
+        }
+
+        if (!res.ok || !data.success) {
+          throw new Error(data?.message || c.serverError);
+        }
+
+        window.location.href = `/${lang}/thank-you/?order_id=${encodeURIComponent(data.order_id)}`;
+
+      } catch (err) {
+        const message = err instanceof Error ? err.message : c.serverError;
+        showGlobalError(message);
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = c.submit;
+        }
+      }
+    });
+  }
+</script>

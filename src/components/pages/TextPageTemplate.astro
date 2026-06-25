@@ -1,0 +1,50 @@
+---
+import type { Lang, WpPageSlug } from '../../types/wp';
+import { getPageContent } from '../../lib/content';
+
+interface Props {
+  lang: Lang;
+  page: 'privacy' | 'terms';
+}
+
+const { lang, page } = Astro.props;
+const isAr = lang === 'ar';
+
+const pageContent = getPageContent(page as WpPageSlug);
+
+const c = {
+  title: isAr ? pageContent.titleAr : (pageContent as any).titleEn,
+  body: isAr ? pageContent.bodyAr : (pageContent as any).bodyEn,
+};
+---
+
+<div class="max-w-3xl mx-auto py-12 lg:py-20 px-6" dir={isAr ? 'rtl' : 'ltr'}>
+  <div class="mb-10 border-b border-border pb-8">
+    <h1 class="text-3xl lg:text-5xl font-bold text-text">{c.title}</h1>
+  </div>
+  
+  <!-- TODO: When this content comes from WordPress WYSIWYG, sanitize or enforce a trusted rendering policy before using set:html. -->
+  <div class="text-page-content" set:html={c.body} />
+</div>
+
+<style is:global>
+  .text-page-content {
+    @apply text-base lg:text-lg;
+  }
+  
+  .text-page-content h2 {
+    @apply text-2xl font-bold text-text mt-12 mb-6;
+  }
+
+  .text-page-content p {
+    @apply text-text-muted leading-relaxed mb-6;
+  }
+
+  .text-page-content ul {
+    @apply list-disc list-inside text-text-muted space-y-3 mb-8;
+  }
+
+  .text-page-content li {
+    @apply leading-relaxed;
+  }
+</style>

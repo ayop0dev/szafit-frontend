@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProgramCard from '../../../components/ProgramCard.astro';
+import { getProgramsSorted } from '../../../lib/content';
+
+const programs = getProgramsSorted();
+const currentPath = Astro.url.pathname;
+const lang = 'ar';
+---
+<BaseLayout lang={lang} title="البرامج — SZAFIT" currentPath={currentPath} showNav>
+  <main class="flex-1 pb-20">
+    <!-- Hero Section -->
+    <section class="relative bg-surface pt-20 lg:pt-28 pb-16 lg:pb-24 overflow-hidden border-b border-border">
+      <!-- Glow effect -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-primary-green/5 blur-[120px] rounded-full pointer-events-none"></div>
+      
+      <div class="max-w-container mx-auto px-6 text-center relative z-10" dir="rtl">
+        <span class="bg-primary text-neutral-dark-1 px-4 py-1.5 rounded-full text-xs font-bold tracking-normal inline-block mb-6 shadow-glow-soft">
+          برامج SZAFIT
+        </span>
+        <h1 class="text-4xl lg:text-6xl font-black text-text leading-tight mb-6">
+          اختر مسارك الرياضي المناسب
+        </h1>
+        <p class="text-lg lg:text-xl text-text-muted max-w-2xl mx-auto leading-relaxed">
+          برامج تدريبية وغذائية مصممة لتناسب هدفك ومستواك، مع متابعة منظمة داخل التطبيق.
+        </p>
+      </div>
+    </section>
+
+    <!-- Programs Grid -->
+    <section class="max-w-container mx-auto px-6 pt-16">
+      {programs.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" dir="rtl">
+          {programs.map((p) => (
+            <ProgramCard program={p} lang={lang} />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-20 bg-surface rounded-2xl border border-border shadow-glow-soft">
+          <p class="text-text-muted text-lg">لا توجد برامج متاحة حالياً.</p>
+        </div>
+      )}
+    </section>
+  </main>
+</BaseLayout>

@@ -2,18 +2,8 @@
 module.exports = {
     darkMode: 'class',
     content: [
-        './index.html',
-        './products.html',
-        './product-single.html',
-        './checkout.html',
-        './contact.html',
-        './about.html',
-        './success-stories.html',
-        './app.html',
-        './booking.html',
-        './thank-you.html',
-        './404.html',
-        './scripts/**/*.js'
+        './src/**/*.{astro,html,js,ts,jsx,tsx}',
+        './public/**/*.html'
     ],
     theme: {
         extend: {
@@ -36,7 +26,22 @@ module.exports = {
                 'secondary-red': '#CF3033',
                 'secondary-red-light': '#FE5356',
                 'secondary-red-lighter': '#FC8782',
-                'secondary-red-pale': '#F9C8CA'
+                'secondary-red-pale': '#F9C8CA',
+                // Demo specific colors
+                'base': '#FAFAF9',
+                'surface': '#FFFFFF',
+                'surface-soft': '#F7F9F8',
+                'text': '#1B3624',
+                'text-muted': '#5A5A5A',
+                'text-faint': '#6A6A6A',
+                'primary': '#C6FF34',
+                'primary-hover': '#D9FF66',
+                'accent': '#5F7D1F',
+                'on-primary': '#0E2A23',
+                'border': '#E7E7E4',
+                'error-bg': '#F9C8CA',
+                'error-border': '#CF3033',
+                'error-text': '#CF3033'
             },
             spacing: {
                 'section-tight': '2rem',       /* 32px */
@@ -51,8 +56,13 @@ module.exports = {
                 sans: ['Changa', 'ui-sans-serif', 'system-ui', 'sans-serif']
             },
             boxShadow: {
-                'glow': '0 8px 24px rgba(198, 255, 52, 0.22)',
-                'glow-soft': '0 6px 18px rgba(198, 255, 52, 0.14)'
+                'glow': '0 4px 12px rgba(198, 255, 52, 0.1)',
+                'glow-soft': '0 2px 8px rgba(198, 255, 52, 0.05)',
+                // Demo specific shadows
+                'card-resting': '0 2px 8px rgba(27,54,36,0.04)',
+                'card-hover': '0 8px 24px rgba(27,54,36,0.08)',
+                'glow-demo': '0 4px 12px rgba(198,255,52,0.1)',
+                'focus-ring': '0 0 0 3px rgba(198,255,52,0.35)',
             },
             keyframes: {
                 float: {
@@ -62,14 +72,35 @@ module.exports = {
                 shimmer: {
                     '0%': { backgroundPosition: '0% 50%' },
                     '100%': { backgroundPosition: '100% 50%' }
+                },
+                // Demo keyframes
+                floatDemo: {
+                    '0%': { transform: 'translateY(0)' },
+                    '100%': { transform: 'translateY(-8px)' }
+                },
+                orbitSlow: {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' }
+                },
+                fadeUp: {
+                    '0%': { opacity: '0', transform: 'translateY(30px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' }
+                },
+                growBar: {
+                    '0%': { height: '0%' }
                 }
             },
             animation: {
                 float: 'float 8s ease-in-out infinite',
-                shimmer: 'shimmer 6s ease-in-out infinite'
+                shimmer: 'shimmer 6s ease-in-out infinite',
+                // Demo animations
+                'float-demo': 'floatDemo 3s ease-in-out infinite alternate',
+                'orbit-slow': 'orbitSlow 20s linear infinite',
+                'fade-up': 'fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                'grow-bar': 'growBar 1.2s cubic-bezier(0.16, 1, 0.3, 1) backwards'
             },
             maxWidth: {
-                'container': '90rem' /* 1440px */
+                'container': '1280px' /* 1280px */
             },
             gridTemplateColumns: {
                 'hero': '11fr 9fr',

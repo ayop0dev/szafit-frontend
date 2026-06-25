@@ -1,0 +1,122 @@
+---
+import type { Lang } from '../../types/wp';
+import { getSiteSettings, getPageContent } from '../../lib/content';
+import AppStoreButtons from '../AppStoreButtons.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const siteSettings = getSiteSettings();
+const pageContent = getPageContent('thank-you');
+
+const appDownloadUrl = siteSettings.appDownloadUrl || '#';
+
+// Localized Content
+const c = {
+  heading: isAr ? pageContent.headingAr : pageContent.headingEn,
+  subheading: isAr ? pageContent.subheadingAr : pageContent.subheadingEn,
+  body: isAr ? pageContent.bodyAr : pageContent.bodyEn,
+  backToPrograms: isAr ? 'العودة للبرامج' : 'Back to Programs',
+  orderIdLabel: isAr ? 'رقم الطلب:' : 'Order ID:',
+};
+
+const programsArchiveUrl = `/${lang}/programs/`;
+---
+
+<div class="max-w-[1140px] w-full mx-auto pt-5 pb-12 lg:py-20 px-6" dir={isAr ? 'rtl' : 'ltr'}>
+  <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+    
+    <!-- App Image Half -->
+    <div class="lg:w-2/5 relative order-1 lg:order-2 flex justify-center">
+      <img src="/assets/images/app-screenshots/welcome.webp" alt="App Preview" class="w-full max-w-[300px] lg:max-w-md h-auto object-contain transition-transform hover:scale-105 duration-500" />
+    </div>
+    
+    <!-- Content Half -->
+    <div class="lg:w-3/5 flex flex-col justify-center order-2 lg:order-1 text-center lg:text-start">
+      
+      <!-- Success icon -->
+      <div class="flex justify-center lg:justify-start mb-8">
+        <div class="h-20 w-20 rounded-full bg-primary-green/15 flex items-center justify-center shadow-glow-soft">
+          <span class="text-accent text-4xl font-bold" aria-hidden="true">✓</span>
+        </div>
+      </div>
+
+      <!-- Heading -->
+      <h1 class="text-3xl lg:text-5xl font-bold text-text mb-4">{c.heading}</h1>
+      <p class="text-xl text-text-muted mb-8">{c.subheading}</p>
+      
+      <!-- Order ID box -->
+      <div id="order-box" class="hidden mb-8">
+        <div class="inline-flex flex-wrap items-center justify-center lg:justify-start gap-3 rounded-2xl border border-primary-green/30 bg-primary-green/5 px-6 py-4">
+          <span class="text-sm text-text-muted">{c.orderIdLabel}</span>
+          <span id="order-id-display" class="text-xl font-bold text-accent font-mono" dir="ltr">—</span>
+          <button id="copy-order-btn" class="ml-2 text-text-muted hover:text-accent transition-colors flex items-center gap-2 bg-base rounded-lg px-3 py-1.5 border border-border" aria-label="Copy Order ID">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="copy-text" class="text-xs font-medium">{isAr ? 'نسخ' : 'Copy'}</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="text-text-muted text-base lg:text-lg leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0">
+        {c.body}
+      </p>
+
+      <!-- App Download Buttons -->
+      <div class="mb-10 flex justify-center lg:justify-start">
+        <div class="transform scale-90 sm:scale-100 origin-center lg:origin-start">
+          <AppStoreButtons />
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="text-center lg:text-start">
+        <a
+          href={programsArchiveUrl}
+          class="inline-block bg-primary text-neutral-dark-1 font-bold rounded-xl px-10 py-4 hover:bg-primary-green-light transition-transform hover:scale-105 shadow-glow-soft w-full sm:w-auto"
+        >
+          {c.backToPrograms}
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get('order_id');
+    const box = document.getElementById('order-box');
+    const display = document.getElementById('order-id-display');
+    const copyBtn = document.getElementById('copy-order-btn');
+    const copyText = document.getElementById('copy-text');
+
+    if (orderId && box && display) {
+      display.textContent = orderId;
+      box.classList.remove('hidden');
+      box.classList.add('flex', 'justify-center', 'lg:justify-start');
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(orderId).then(() => {
+            const originalText = copyText.textContent;
+            const isAr = window.location.pathname.includes('/ar');
+            copyText.textContent = isAr ? 'تم النسخ!' : 'Copied!';
+            copyBtn.classList.add('text-primary');
+            setTimeout(() => {
+              copyText.textContent = originalText;
+              copyBtn.classList.remove('text-primary');
+            }, 2000);
+          }).catch(err => console.error('Failed to copy', err));
+        });
+      }
+    }
+  });
+</script>

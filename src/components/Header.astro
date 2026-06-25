@@ -1,0 +1,141 @@
+---
+import type { Lang } from '../types/wp';
+import { getAlternateLangUrl } from '../utils/i18n';
+
+interface Props {
+    lang: Lang;
+    currentPath: string;
+    showNav?: boolean;
+}
+
+const { lang, currentPath, showNav = false } = Astro.props;
+const alternateLangHref = getAlternateLangUrl(currentPath, lang);
+const alternateLangLabel = lang === 'ar' ? 'E' : 'ع';
+const homeHref = `/${lang}/`;
+
+// Updated: Always link to the actual programs page instead of an anchor on the homepage
+const programsHref = `/${lang}/programs/`;
+
+const navLinks = lang === 'ar'
+    ? [
+        { href: homeHref, label: 'الرئيسية' },
+        { href: programsHref, label: 'البرامج' },
+        { href: `/${lang}/about/`, label: 'عنا' },
+        { href: `/${lang}/contact/`, label: 'تواصل' },
+    ]
+    : [
+        { href: homeHref, label: 'Home' },
+        { href: programsHref, label: 'Programs' },
+        { href: `/${lang}/about/`, label: 'About' },
+        { href: `/${lang}/contact/`, label: 'Contact' },
+    ];
+---
+<header class="sticky top-0 z-50 bg-base/90 backdrop-blur border-b border-border">
+  <div class="max-w-container mx-auto px-6 py-4 flex items-center justify-between gap-6">
+    <!-- Start (Right in Arabic): Logo -->
+    <a href={homeHref} class="shrink-0 flex items-center">
+      <img src="/assets/images/szafit-logo.png" alt="SZAFIT" class="h-8 lg:h-10 w-auto" />
+    </a>
+
+    <!-- Middle: Desktop Navigation -->
+    {showNav && (
+      <nav
+        class="hidden md:flex items-center gap-6"
+        aria-label={lang === 'ar' ? 'التنقل الرئيسي' : 'Main navigation'}
+      >
+        {navLinks.map((link) => (
+          <a
+            href={link.href}
+            class="text-text-muted hover:text-accent transition-colors text-sm font-medium"
+          >
+            {link.label}
+          </a>
+        ))}
+      </nav>
+    )}
+
+    <!-- End (Left in Arabic): Language & Hamburger -->
+    <div class="flex items-center gap-4">
+      <a
+        id="lang-switch"
+        href={alternateLangHref}
+        class="text-accent border border-accent rounded-full w-8 h-8 flex items-center justify-center text-sm font-medium hover:bg-accent hover:text-surface transition-colors shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+      >
+        {alternateLangLabel}
+      </a>
+      {showNav && (
+        <button id="mobile-menu-btn" class="md:hidden text-text hover:text-accent p-1 -me-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="Open menu">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      )}
+    </div>
+  </div>
+</header>
+
+{showNav && (
+<div id="mobile-menu-container" class="fixed inset-0 z-[100] hidden">
+  <div id="mobile-backdrop" class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300"></div>
+  <div id="mobile-panel" class="absolute top-0 bottom-0 start-0 w-[280px] bg-base shadow-2xl transform -translate-x-full rtl:translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="flex items-center justify-between p-6 border-b border-border">
+      <img src="/assets/images/szafit-logo.png" alt="SZAFIT" class="h-8 w-auto" />
+      <button id="close-menu-btn" class="text-text hover:text-accent p-2 -me-2" aria-label="Close menu">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col p-6 gap-6">
+      {navLinks.map((link) => (
+        <a href={link.href} class="text-text hover:text-accent text-lg font-medium transition-colors">
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</div>
+)}
+
+<script>
+  // Preserve query string in language switch (e.g. ?program=... on checkout, ?order_id=... on thank-you)
+  const langSwitch = document.getElementById('lang-switch') as HTMLAnchorElement | null;
+  if (langSwitch && window.location.search) {
+    langSwitch.href += window.location.search;
+  }
+
+  // Mobile Menu Logic
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const closeMenuBtn = document.getElementById('close-menu-btn');
+  const mobileMenuContainer = document.getElementById('mobile-menu-container');
+  const mobileBackdrop = document.getElementById('mobile-backdrop');
+  const mobilePanel = document.getElementById('mobile-panel');
+
+  function openMenu() {
+    if (!mobileMenuContainer || !mobileBackdrop || !mobilePanel) return;
+    mobileMenuContainer.classList.remove('hidden');
+    // Force reflow for transitions to work
+    void mobileMenuContainer.offsetWidth;
+    mobileBackdrop.classList.remove('opacity-0');
+    mobilePanel.classList.remove('-translate-x-full', 'rtl:translate-x-full');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    if (!mobileMenuContainer || !mobileBackdrop || !mobilePanel) return;
+    mobileBackdrop.classList.add('opacity-0');
+    mobilePanel.classList.add('-translate-x-full', 'rtl:translate-x-full');
+    document.body.style.overflow = '';
+    
+    // Wait for transition to finish before hiding container
+    setTimeout(() => {
+      mobileMenuContainer.classList.add('hidden');
+    }, 300);
+  }
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', openMenu);
+  }
+  if (closeMenuBtn) {
+    closeMenuBtn.addEventListener('click', closeMenu);
+  }
+  if (mobileBackdrop) {
+    mobileBackdrop.addEventListener('click', closeMenu);
+  }
+</script>

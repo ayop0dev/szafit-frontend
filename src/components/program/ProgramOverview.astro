@@ -1,0 +1,81 @@
+---
+import type { WpProgram, LocalizedProgram, Lang } from '../../types/wp';
+import { formatPrice } from '../../utils/i18n';
+
+interface Props {
+    program: WpProgram;
+    localized: LocalizedProgram;
+    lang: Lang;
+    checkoutHref: string;
+}
+
+const { program, localized, lang, checkoutHref } = Astro.props;
+const priceLabel = formatPrice(program.price, program.currency, lang);
+
+const copy = {
+    ar: {
+        coachName: "كوتش سزا",
+        coachBio: "أكثر من 5 سنوات من الخبرة في مساعدة المتدربات على الوصول لأفضل نسخة من أنفسهن عبر برامج علمية وعملية.",
+        titleStart: "تدريب مصمم خصيصاً ",
+        titleHighlight: "لأسلوب حياتك",
+        totalPrice: "السعر الشامل",
+        subscribe: "اشترك في البرنامج"
+    },
+    en: {
+        coachName: "Coach SZA",
+        coachBio: "Over 5 years of experience helping women reach their best version through scientific and practical programs.",
+        titleStart: "Training tailored ",
+        titleHighlight: "to your lifestyle",
+        totalPrice: "Total Price",
+        subscribe: "Subscribe to Program"
+    }
+};
+
+const c = lang === 'ar' ? copy.ar : copy.en;
+---
+<section class="max-w-container mx-auto px-6 py-20 fade-target">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Image Column -->
+        <div class={`relative w-full aspect-[4/5] lg:aspect-[3/4] rounded-3xl overflow-hidden ${lang === 'ar' ? 'order-1 lg:order-1' : 'order-1 lg:order-2'}`}>
+            <!-- Using the coach image from the demo -->
+            <img src="/assets/images/coach-sza/coach-sza (5).webp" alt="Coach SZA" class="w-full h-full object-contain" onerror="this.style.display='none'">
+            <div class="absolute bottom-6 left-6 right-6 bg-surface/90 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-white/10" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+                <h3 class="font-bold text-xl text-text mb-2">{c.coachName}</h3>
+                <p class="text-text-muted text-sm leading-relaxed">{c.coachBio}</p>
+            </div>
+        </div>
+        
+        <!-- Content Column -->
+        <div class={`flex flex-col ${lang === 'ar' ? 'order-2 lg:order-2' : 'order-2 lg:order-1'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+            <h2 class="text-4xl lg:text-5xl font-black text-text mb-6 leading-tight">
+                {c.titleStart}<span class="text-accent">{c.titleHighlight}</span>
+            </h2>
+            <p class="text-lg text-text-muted mb-8 leading-relaxed whitespace-pre-line">
+                {localized.description}
+            </p>
+            
+            {localized.requirements && localized.requirements.length > 0 && (
+                <ul class="flex flex-col gap-4 mb-10">
+                    {localized.requirements.map(req => (
+                        <li class="flex items-center gap-3">
+                            <div class="bg-primary/20 text-accent p-1.5 rounded-full shrink-0">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                            </div>
+                            <span class="text-text font-medium">{req}</span>
+                        </li>
+                    ))}
+                </ul>
+            )}
+            
+            <div class="bg-surface p-6 lg:p-8 rounded-2xl border border-border flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
+                <div class={`text-center ${lang === 'ar' ? 'sm:text-start' : 'sm:text-start'}`}>
+                    <p class="text-text-muted text-sm font-bold mb-1 uppercase tracking-widest">{c.totalPrice}</p>
+                    <p class="text-4xl font-black text-text flex items-center gap-2" dir="ltr" set:html={priceLabel}></p>
+                </div>
+                <a href={checkoutHref} class="w-full sm:w-auto text-center bg-primary text-neutral-dark-1 px-10 py-4 rounded-xl font-bold text-lg hover:bg-primary-green-light shadow-glow transition-transform hover:-translate-y-1">
+                    {c.subscribe}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

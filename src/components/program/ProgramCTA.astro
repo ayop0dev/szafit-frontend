@@ -1,0 +1,53 @@
+---
+import type { WpProgram, LocalizedProgram, Lang } from '../../types/wp';
+import { formatPrice } from '../../utils/i18n';
+
+interface Props {
+    program: WpProgram;
+    localized: LocalizedProgram;
+    lang: Lang;
+    checkoutHref: string;
+}
+
+const { program, localized, lang, checkoutHref } = Astro.props;
+const priceLabel = formatPrice(program.price, program.currency, lang);
+
+const copy = {
+    ar: {
+        title: "جاهز لبدء رحلتك؟",
+        desc: "انضم اليوم واحصل على خطتك المخصصة عبر التطبيق، وابدأ أولى خطواتك نحو الجسم الذي طالما حلمت به.",
+        investment: "استثمار لمرة واحدة",
+        subscribe: "اشترك الآن وابدأ فوراً"
+    },
+    en: {
+        title: "Ready to start your journey?",
+        desc: "Join today and get your customized plan via the app, and take your first steps towards the body you've always dreamed of.",
+        investment: "One-time investment",
+        subscribe: "Subscribe now and start immediately"
+    }
+};
+
+const c = lang === 'ar' ? copy.ar : copy.en;
+---
+<!-- Big Buy Banner -->
+<section class="max-w-container mx-auto px-6 py-12 fade-target" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <div class="bg-neutral-dark-1 text-white rounded-[32px] p-10 lg:p-16 flex flex-col items-center text-center shadow-glow-soft relative overflow-hidden group">
+        <!-- Background Image -->
+        <img src={localized.image} alt="" class="absolute inset-0 w-full h-full object-cover opacity-40 transition-transform duration-700 group-hover:scale-105" onerror="this.style.display='none'">
+        <!-- Gradient Overlay -->
+        <div class="absolute inset-0 bg-gradient-to-t from-neutral-dark-1/95 via-neutral-dark-1/60 to-neutral-dark-1/90"></div>
+        
+        <h2 class="text-4xl lg:text-5xl font-black mb-6 relative z-10 leading-tight">{c.title}</h2>
+        <p class="text-white/80 text-lg mb-10 max-w-2xl relative z-10 font-medium">{c.desc}</p>
+        
+        <div class="bg-white/10 backdrop-blur-md border border-white/10 p-6 lg:p-8 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8 relative z-10 w-full max-w-3xl shadow-lg">
+            <div class={`text-center ${lang === 'ar' ? 'md:text-start' : 'md:text-start'}`}>
+                <p class="text-white/70 text-sm font-bold uppercase tracking-widest mb-1">{c.investment}</p>
+                <p class="text-5xl font-black text-primary flex justify-center items-center gap-2" dir="ltr" set:html={priceLabel}></p>
+            </div>
+            <a href={checkoutHref} class="w-full md:w-auto text-center bg-primary text-neutral-dark-1 px-8 py-5 rounded-2xl font-bold text-xl hover:bg-primary-green-light shadow-glow transition-transform hover:-translate-y-1">
+                {c.subscribe}
+            </a>
+        </div>
+    </div>
+</section>

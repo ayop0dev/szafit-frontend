@@ -1,0 +1,32 @@
+---
+import { getProgramsSorted } from '../../lib/content';
+import type { Lang } from '../../types/wp';
+import ProgramCard from '../ProgramCard.astro';
+
+interface Props {
+    currentSlug: string;
+    lang: Lang;
+}
+
+const { currentSlug, lang } = Astro.props;
+
+const allPrograms = getProgramsSorted();
+const relatedPrograms = allPrograms.filter(p => p.slug !== currentSlug).slice(0, 3);
+
+const title = lang === 'ar' ? 'يمكنك أيضاً مشاهدة' : 'You May Also Like';
+const backText = lang === 'ar' ? '← العودة للبرامج' : '← Back to Programs';
+---
+<section class="max-w-[1280px] mx-auto px-6 lg:px-10 pb-14 lg:pb-20">
+    <div class="mb-10 flex flex-col md:flex-row justify-between items-center gap-4 animate-fade-up" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+        <h2 class="text-3xl lg:text-4xl font-bold text-text">{title}</h2>
+        <a href={`/${lang}/programs/`} class="inline-flex items-center gap-2 text-primary font-medium hover:text-primary-green-light transition-colors">
+            {backText}
+        </a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {relatedPrograms.map((p) => (
+            <ProgramCard program={p} lang={lang} />
+        ))}
+    </div>
+</section>

@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CheckoutForm from '../../../components/checkout/CheckoutForm.astro';
+
+const currentPath = Astro.url.pathname;
+---
+<BaseLayout lang="ar" title="إتمام الطلب — SZAFIT" currentPath={currentPath} showNav>
+  <main class="flex-1 bg-surface-soft min-h-screen">
+    <CheckoutForm lang="ar" />
+  </main>
+</BaseLayout>

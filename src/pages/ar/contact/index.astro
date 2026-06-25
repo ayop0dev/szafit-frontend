@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ContactTemplate from '../../../components/pages/ContactTemplate.astro';
+import { getPageContent } from '../../../lib/content';
+
+const currentPath = Astro.url.pathname;
+const pageContent = getPageContent('contact');
+---
+
+<BaseLayout lang="ar" title={`${pageContent.titleAr} — SZAFIT`} currentPath={currentPath} showNav>
+  <ContactTemplate lang="ar" />
+</BaseLayout>

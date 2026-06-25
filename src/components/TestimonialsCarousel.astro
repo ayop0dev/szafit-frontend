@@ -1,0 +1,91 @@
+---
+import type { Lang } from '../types/wp';
+
+interface Props {
+    lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const testimonials = {
+    ar: [
+        { text: "البرامج غيرت حياتي 180 درجة، وأفضل استثمار عملته لنفسي.", name: "أميرة ر." },
+        { text: "متابعة المدربة سارة ممتازة ومستمرة، أنصح بقوة ببرنامج VIP.", name: "سارة م." },
+        { text: "تطبيق سهل الاستخدام والمؤشرات واضحة تخليني متحفزة دائماً.", name: "عبير خ." },
+        { text: "برنامج Burn X تحدي حقيقي ونتائجه خرافية في وقت قياسي.", name: "ليلى غ." },
+        { text: "من أفضل منصات التدريب اللي جربتها، احترافية عالية.", name: "خلود ف." },
+        { text: "سهولة في تتبع السعرات والتمارين اليومية.", name: "مريم ص." }
+    ],
+    en: [
+        { text: "The programs changed my life 180 degrees, best investment in myself.", name: "Amira R." },
+        { text: "Coach SZA's monitoring is excellent and continuous. Highly recommend VIP.", name: "Sara M." },
+        { text: "Easy-to-use app and clear indicators keep me motivated.", name: "Abeer K." },
+        { text: "Burn X program is a real challenge with incredible results in record time.", name: "Laila G." },
+        { text: "One of the best training platforms I've tried, highly professional.", name: "Kholoud F." },
+        { text: "Easy to track daily calories and workouts.", name: "Maryam S." }
+    ]
+};
+
+const texts = {
+    ar: { tag: "تجارب المتدربات", title: "ماذا يقولون عنا؟" },
+    en: { tag: "Testimonials", title: "What they say about us?" }
+};
+
+const t = testimonials[lang];
+const content = texts[lang];
+const isRtl = lang === 'ar';
+---
+
+<section class="py-14 lg:py-20 bg-surface border-y border-border overflow-hidden">
+    <div class="max-w-[1280px] mx-auto px-6 lg:px-10 mb-10 text-center animate-fade-up">
+        <span class="bg-primary text-on-primary px-3 py-1 rounded-full text-[12px] font-[600]">{content.tag}</span>
+        <h2 class="text-[30px] lg:text-[40px] font-[700] mt-4 leading-[1.2]">{content.title}</h2>
+    </div>
+
+    <!-- Carousel Container -->
+    <div class="relative w-full flex items-center group/carousel">
+        <div class={`flex gap-6 w-max hover:[animation-play-state:paused] cursor-pointer ${isRtl ? 'animate-scroll-rtl' : 'animate-scroll-ltr'}`} onclick="this.classList.toggle('pause-mobile')">
+            {[...t, ...t].map((item) => (
+                <div class="bg-surface-soft p-6 rounded-[20px] shadow-card-resting w-[300px] lg:w-[400px] shrink-0 border border-border flex flex-col justify-between">
+                    <div>
+                        <div class="text-accent text-4xl leading-none mb-4 font-serif">"</div>
+                        <p class="text-[16px] text-text-muted mb-6 leading-relaxed whitespace-normal" dir={isRtl ? 'rtl' : 'ltr'}>{item.text}</p>
+                    </div>
+                    <div class="font-bold text-text" dir={isRtl ? 'rtl' : 'ltr'}>{item.name}</div>
+                </div>
+            ))}
+        </div>
+    </div>
+</section>
+
+<style>
+    .animate-scroll-rtl {
+        animation: scrollRtl 25s linear infinite;
+    }
+    
+    .animate-scroll-ltr {
+        animation: scrollLtr 25s linear infinite;
+    }
+
+    .pause-mobile {
+        animation-play-state: paused !important;
+    }
+
+    @keyframes scrollRtl {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(50% + 12px)); /* 50% width + half of the gap (gap-6 = 24px) */
+        }
+    }
+
+    @keyframes scrollLtr {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-50% - 12px));
+        }
+    }
+</style>

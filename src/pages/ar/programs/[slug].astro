@@ -1,0 +1,41 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getProgramsSorted, getProgramBySlug, getLocalizedProgram } from '../../../lib/content';
+import type { WpProgram } from '../../../types/wp';
+
+import ProgramHero from '../../../components/program/ProgramHero.astro';
+import ProgramOverview from '../../../components/program/ProgramOverview.astro';
+import ProgramModules from '../../../components/program/ProgramModules.astro';
+import ProgramTestimonials from '../../../components/program/ProgramTestimonials.astro';
+import ProgramCTA from '../../../components/program/ProgramCTA.astro';
+import RelatedPrograms from '../../../components/program/RelatedPrograms.astro';
+
+export const getStaticPaths: GetStaticPaths = () => {
+    return getProgramsSorted().map((p) => ({
+        params: { slug: p.slug },
+        props: { program: p },
+    }));
+};
+
+interface Props {
+    program: WpProgram;
+}
+
+const { program } = Astro.props;
+const currentPath = Astro.url.pathname;
+const localized = getLocalizedProgram(program, 'ar');
+const lang = 'ar';
+const checkoutHref = `/ar/checkout/?program=${program.slug}`;
+const archiveHref = `/ar/programs/`;
+---
+<BaseLayout lang={lang} title={`${localized.title} — SZAFIT`} currentPath={currentPath} showNav>
+  <main class="flex-1 pb-12">
+    <ProgramHero program={program} localized={localized} lang={lang} checkoutHref={checkoutHref} archiveHref={archiveHref} />
+    <ProgramOverview program={program} localized={localized} lang={lang} checkoutHref={checkoutHref} />
+    <ProgramModules lang={lang} />
+    <ProgramTestimonials lang={lang} />
+    <ProgramCTA program={program} localized={localized} lang={lang} checkoutHref={checkoutHref} />
+    <RelatedPrograms currentSlug={program.slug} lang={lang} />
+  </main>
+</BaseLayout>

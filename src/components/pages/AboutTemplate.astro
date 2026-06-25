@@ -1,0 +1,67 @@
+---
+import type { Lang } from '../../types/wp';
+import { getPageContent } from '../../lib/content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const isAr = lang === 'ar';
+
+const aboutContent = getPageContent('about');
+
+const c = {
+  title: isAr ? aboutContent.titleAr : (aboutContent as any).titleEn,
+  body: isAr ? aboutContent.bodyAr : (aboutContent as any).bodyEn,
+  ctaLabel: isAr ? (aboutContent as any).ctaLabelAr : (aboutContent as any).ctaLabelEn,
+};
+
+const programsHref = `/${lang}/programs/`;
+---
+
+<div class="max-w-5xl mx-auto py-12 lg:py-20 px-6" dir={isAr ? 'rtl' : 'ltr'}>
+  <div class="bg-surface border border-border rounded-3xl overflow-hidden shadow-2xl flex flex-col lg:flex-row">
+    
+    <!-- Image Half -->
+    <div class="lg:w-1/2 relative h-[400px] lg:h-auto">
+      <img src="/assets/images/coach-sza/coach-sza (1).webp" alt="Coach SZA" class="absolute inset-0 w-full h-full object-cover object-top" />
+      <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent lg:hidden"></div>
+    </div>
+    
+    <!-- Content Half -->
+    <div class="lg:w-1/2 p-8 lg:p-12 xl:p-16 flex flex-col justify-center relative z-10">
+      <h1 class="text-3xl lg:text-4xl font-bold text-text mb-6">{c.title}</h1>
+      
+      <div class="text-page-content mb-10" set:html={c.body} />
+      
+      <div>
+        <a 
+          href={programsHref}
+          class="inline-block bg-primary text-neutral-dark-3 px-8 py-4 rounded-xl font-bold transition-transform hover:scale-105"
+        >
+          {c.ctaLabel}
+        </a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<style is:global>
+  .text-page-content {
+    @apply text-base lg:text-lg text-text-muted leading-relaxed;
+  }
+  
+  .text-page-content h2 {
+    @apply text-xl font-bold text-text mt-8 mb-3;
+  }
+
+  .text-page-content p {
+    @apply mb-4 last:mb-0;
+  }
+
+  .text-page-content ul {
+    @apply list-disc list-inside space-y-2 mb-4;
+  }
+</style>

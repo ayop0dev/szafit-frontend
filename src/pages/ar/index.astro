@@ -1,0 +1,481 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProgramCard from '../../components/ProgramCard.astro';
+import TestimonialsCarousel from '../../components/TestimonialsCarousel.astro';
+import FinalCta from '../../components/FinalCta.astro';
+import AppStoreButtons from '../../components/AppStoreButtons.astro';
+import { getAllPrograms } from '../../lib/content';
+
+const programs = getAllPrograms();
+const currentPath = Astro.url.pathname;
+---
+
+<BaseLayout lang="ar" title="SZAFIT | نظام اللياقة المتكامل" currentPath={currentPath} showNav>
+  <main class="flex-1 bg-base text-text">
+
+    <!-- Section 01: Hero -->
+    <section class="relative bg-base glow-hero overflow-hidden pt-5 lg:pt-6 pb-12 lg:pb-20">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10 h-full flex flex-col items-center justify-start relative">
+            <div class="z-10 text-center flex flex-col items-center gap-2.5 w-full max-w-5xl mx-auto px-2">
+                <span class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-[12px] lg:text-[13px] font-bold tracking-normal animate-fade-up shadow-sm">نظام اللياقة المتكامل</span>
+                
+                <h1 class="text-[32px] lg:text-[48px] xl:text-[54px] font-[800] text-text leading-[1.2] animate-fade-up">
+                    حوّل جسمك إلى<br class="block md:hidden" /> <span class="hidden md:inline"></span>تحفة فنية رياضية
+                </h1>
+                
+                <div class="flex flex-col gap-1.5 mt-2 mx-auto w-full max-w-full justify-center items-center">
+                    <p class="text-[16px] min-[400px]:text-[18px] sm:text-[22px] md:text-[28px] lg:text-[32px] font-black text-text animate-fade-up delay-200 whitespace-nowrap md:whitespace-normal" style="animation-fill-mode: both;">استثمر في صحتك اليوم مع كوتش سزا.</p>
+                    <p class="text-[12px] md:text-[15px] lg:text-[17px] font-medium text-text-muted animate-fade-up delay-200" style="animation-fill-mode: both;">برامج تدريب وتغذية مدفوعة ومخصصة عبر التطبيق للنخبة ومحبي التميز البدني.</p>
+                </div>
+            </div>
+
+            <div class="z-20 mt-8 lg:mt-10 relative flex justify-center w-full max-w-5xl animate-fade-up delay-200 pb-0" style="animation-fill-mode: both;">
+                <div class="relative w-[260px] lg:w-[320px] xl:w-[340px] z-20 hero-slider">
+                    <!-- Base image to set height -->
+                    <img src="/assets/images/app-screenshots/welcome.webp" alt="App Welcome Base" class="w-full h-auto drop-shadow-2xl object-contain opacity-100">
+                    <!-- Slider images -->
+                    <img src="/assets/images/app-screenshots/welcome.webp" alt="App Screen" class="absolute inset-0 w-full h-full object-contain drop-shadow-2xl slide-img">
+                    <img src="/assets/images/app-screenshots/dashboard.webp" alt="App Screen" class="absolute inset-0 w-full h-full object-contain drop-shadow-2xl slide-img">
+                    <img src="/assets/images/app-screenshots/programs.webp" alt="App Screen" class="absolute inset-0 w-full h-full object-contain drop-shadow-2xl slide-img">
+                    <img src="/assets/images/app-screenshots/single-program.webp" alt="App Screen" class="absolute inset-0 w-full h-full object-contain drop-shadow-2xl slide-img">
+                    <img src="/assets/images/app-screenshots/diet.webp" alt="App Screen" class="absolute inset-0 w-full h-full object-contain drop-shadow-2xl slide-img">
+                    <img src="/assets/images/app-screenshots/meals.webp" alt="App Screen" class="absolute inset-0 w-full h-full object-contain drop-shadow-2xl slide-img">
+                </div>
+                
+                <div class="absolute top-[10%] -start-[5%] lg:start-[5%] xl:start-[2%] z-30 animate-[floatDemo_3s_ease-in-out_infinite_alternate] delay-[0.8s] bg-surface p-3 lg:p-4 rounded-[16px] lg:rounded-[20px] shadow-card-resting flex items-center gap-3 transition-transform hover:scale-105 cursor-default scale-[0.85] lg:scale-100 origin-left">
+                    <div class="bg-primary/20 text-accent p-2 rounded-full"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+                    <div>
+                        <div class="text-[12px] lg:text-[14px] font-bold text-text">تمرين مكتمل</div>
+                        <div class="text-[11px] lg:text-[12px] text-text-faint" dir="ltr">Today</div>
+                    </div>
+                </div>
+
+                <div class="flex absolute top-[35%] -start-[2%] lg:start-[0%] xl:-start-[2%] z-30 animate-[floatDemo_3s_ease-in-out_infinite_alternate] bg-surface p-4 rounded-[20px] shadow-card-resting items-center gap-3 transition-transform hover:scale-105 cursor-default scale-[0.75] lg:scale-100 origin-left">
+                    <div class="text-accent"><svg width="24" height="24" fill="currentColor"><path d="M12 2c0 0-5 6-5 10a5 5 0 0010 0c0-4-5-10-5-10z"/></svg></div>
+                    <div>
+                        <div class="text-[14px] font-bold text-text">سعرات محروقة</div>
+                        <div class="text-[14px] font-bold text-text" dir="ltr">450 kcal</div>
+                    </div>
+                </div>
+
+                <div class="hidden lg:flex absolute top-[70%] lg:start-[5%] xl:start-[5%] z-30 animate-[floatDemo_3s_ease-in-out_infinite_alternate] delay-[1.6s] bg-surface p-4 rounded-[20px] shadow-card-resting items-center gap-3 transition-transform hover:scale-105 cursor-default">
+                    <div class="text-accent text-2xl">🔥</div>
+                    <div>
+                        <div class="text-[14px] font-bold text-text">سلسلة النشاط</div>
+                        <div class="text-[14px] font-bold text-text" dir="ltr">18 days</div>
+                    </div>
+                </div>
+                
+                <div class="absolute top-[20%] -end-[5%] lg:end-[5%] xl:end-[2%] z-30 animate-[floatDemo_3s_ease-in-out_infinite_alternate] delay-[1.6s] bg-surface p-3 lg:p-4 rounded-[16px] lg:rounded-[20px] shadow-card-resting flex items-center gap-3 transition-transform hover:scale-105 cursor-default scale-[0.85] lg:scale-100 origin-right">
+                    <img src="/assets/images/coach-sza/coach-sza (7).webp" alt="Coach" class="w-8 h-8 lg:w-10 lg:h-10 rounded-full object-cover border-2 border-surface">
+                    <div>
+                        <div class="text-[12px] lg:text-[14px] font-bold text-text">رسالة المدربة</div>
+                        <div class="text-[11px] lg:text-[12px] text-text-muted max-w-[100px] truncate">ممتاز! نرفع الحمل...</div>
+                    </div>
+                </div>
+
+                <div class="flex absolute top-[55%] -end-[2%] lg:end-[-2%] xl:-end-[2%] z-30 animate-[floatDemo_3s_ease-in-out_infinite_alternate] delay-[0.8s] bg-surface p-4 rounded-[20px] shadow-card-resting items-center gap-3 transition-transform hover:scale-105 cursor-default scale-[0.75] lg:scale-100 origin-right">
+                    <div class="w-10 h-10 rounded-full border-4 border-border border-t-primary flex items-center justify-center text-[12px] font-bold" dir="ltr">85%</div>
+                    <div>
+                        <div class="text-[14px] font-bold text-text">تقدم التغذية</div>
+                    </div>
+                </div>
+
+                <div class="hidden lg:flex absolute top-[80%] lg:end-[5%] xl:end-[5%] z-30 animate-[floatDemo_3s_ease-in-out_infinite_alternate] bg-surface p-4 rounded-[20px] shadow-card-resting items-center gap-3 transition-transform hover:scale-105 cursor-default">
+                    <div class="text-accent"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+                    <div>
+                        <div class="text-[14px] font-bold text-text">المتابعة الأسبوعية</div>
+                        <div class="text-[12px] text-accent font-medium">مكتمل</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 02: Trust Strip -->
+    <section class="bg-surface-soft border-y border-border py-8">
+        <div class="max-w-[1280px] mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0 lg:divide-x lg:divide-border rtl:divide-x-reverse">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-4 text-center lg:text-start animate-fade-up">
+                <svg class="text-accent shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <div class="text-[16px] lg:text-[20px] font-[700] text-text" dir="ltr">1,200+</div>
+                    <div class="text-[16px] lg:text-[20px] font-[700] text-text">عضو نشط</div>
+                </div>
+            </div>
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-4 text-center lg:text-start animate-fade-up delay-[100ms]" style="animation-fill-mode: both;">
+                <svg class="text-accent shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                <div class="flex items-center justify-center gap-2 flex-wrap">
+                    <div class="text-[16px] lg:text-[20px] font-[700] text-text" dir="ltr">4</div>
+                    <div class="text-[16px] lg:text-[20px] font-[700] text-text">برامج متخصصة</div>
+                </div>
+            </div>
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-4 text-center lg:text-start animate-fade-up delay-[200ms]" style="animation-fill-mode: both;">
+                <svg class="text-accent shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                <div>
+                    <div class="text-[16px] lg:text-[20px] font-[700] text-text">تطبيق موبايل متكامل</div>
+                </div>
+            </div>
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-2 lg:gap-4 text-center lg:text-start animate-fade-up delay-[300ms]" style="animation-fill-mode: both;">
+                <svg class="text-accent shrink-0" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                <div>
+                    <div class="text-[16px] lg:text-[20px] font-[700] text-text">دعم مباشر من المدربة</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 03: Programs -->
+    <section id="programs" class="bg-base py-14 lg:py-20">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
+            <div class="mb-12 animate-fade-up">
+                <div class="flex flex-row justify-between items-center mb-4">
+                    <span class="bg-primary text-on-primary px-3 py-1 rounded-full text-[12px] font-[600] shrink-0">برامجنا</span>
+                    <a href="/ar/programs/" class="text-accent font-medium hover:underline flex items-center gap-2 transition-transform hover:-translate-x-1 text-[14px] shrink-0">عرض جميع البرامج <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="rotate-180"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+                </div>
+                <h2 class="text-[30px] lg:text-[40px] font-[700] leading-[1.2]">اختر مسارك الرياضي المناسب</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {programs.map((p) => (
+                    <ProgramCard program={p} lang="ar" />
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 05: App Experience -->
+    <section id="app" class="bg-base py-14 lg:py-20 overflow-hidden">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
+            <div class="mb-12 animate-fade-up">
+                <span class="bg-primary text-on-primary px-3 py-1 rounded-full text-[12px] font-[600]">تجربة التطبيق</span>
+                <h2 class="text-[30px] lg:text-[40px] font-[700] mt-4 leading-[1.2]">الأداء الرياضي على هاتفك</h2>
+                <p class="text-[16px] lg:text-[18px] text-text-muted mt-4 max-w-2xl leading-[1.65]">واجهة برمجية متطورة وسهلة توفر لك كل ما تحتاجه للالتزام وتحقيق أهدافك اليومية.</p>
+            </div>
+
+            <div class="flex lg:grid overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none gap-4 lg:grid-cols-4 pb-12 lg:pb-0 hide-scrollbar px-6 lg:px-0 -mx-6 lg:mx-0">
+                {[ 
+                    { label: 'الدخول', webm: '/assets/videos/login.webm', poster: '', title: 'سهولة الوصول للمنصة', desc: 'واجهة مريحة لتسجيل الدخول والوصول لجميع برامجك بسهولة وسرعة.' },
+                    { label: 'المتابعة الأسبوعية', webm: '/assets/videos/program2.webm', poster: '/assets/images/app-screenshots/meals.webp', title: 'التقارير والمتابعة', desc: 'أرسل قياساتك وصور تطورك للمدربة واحصل على التعديلات اللازمة لخطتك.' },
+                    { label: 'التغذية', webm: '/assets/videos/diet.webm', poster: '/assets/images/app-screenshots/diet.webp', title: 'حساب السعرات', desc: 'سجّل وجباتك اليومية وتأكد من تغطية احتياجك من البروتين والسعرات بدقة.' },
+                    { label: 'التمارين', webm: '/assets/videos/program.webm', poster: '/assets/images/app-screenshots/single-program.webp', title: 'تتبع التمارين الذكي', desc: 'سجّل كل جولة وعدّة بدقة، وتابع أوزانك أسبوعياً لتضمن التطور المستمر.' }
+                ].map((c, i) => (
+                    <div class="snap-start shrink-0 w-[85vw] sm:w-[280px] lg:w-auto bg-surface p-4 lg:p-5 rounded-[20px] shadow-card-resting flex flex-col gap-4 lg:gap-5 animate-fade-up hover:-translate-y-1 transition-transform duration-300" style={`animation-delay: ${i*100}ms; animation-fill-mode: both;`}>
+                        <span class="self-start bg-primary text-on-primary px-3 py-1 rounded-full text-[11px] lg:text-[12px] font-[600] shadow-sm">{c.label}</span>
+                        <div class="flex-1 flex flex-col items-center justify-center">
+                            {c.webm ? (
+                                <video class="w-full rounded-[16px] lg:rounded-[20px] aspect-[9/19] object-cover" autoplay muted loop playsinline poster={c.poster || undefined}>
+                                    <source src={c.webm} type="video/webm" />
+                                </video>
+                            ) : (
+                                <div class="w-full rounded-[16px] lg:rounded-[20px] aspect-[9/19] bg-gradient-to-b from-surface-soft to-border flex flex-col items-center justify-center text-text text-sm font-semibold border border-border">
+                                    <div class="w-12 h-12 rounded-full bg-primary/30 flex items-center justify-center mb-3">
+                                        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                                    </div>
+                                    <span>{c.label}</span>
+                                </div>
+                            )}
+                        </div>
+                        <div>
+                            <h3 class="text-[17px] lg:text-[18px] font-[700] text-text mb-2 whitespace-nowrap overflow-hidden text-ellipsis">{c.title}</h3>
+                            <p class="text-[13px] lg:text-[14px] text-text-muted line-clamp-2 leading-[1.6]">{c.desc}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 06: Meet Coach SZA -->
+    <section id="coach" class="bg-surface-soft pt-14 pb-14 lg:pt-20 lg:pb-20 border-t border-border overflow-hidden">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
+            <div class="flex flex-col lg:grid lg:grid-cols-[5fr_auto_3fr] gap-8 lg:gap-12 items-center">
+                
+                <div class="w-full order-2 lg:order-2 animate-fade-up delay-[100ms]" style="animation-fill-mode: both;">
+                    <img src="/assets/images/coach-sza/coach-sza (5).webp" alt="Coach SZA" class="w-full h-auto max-h-[400px] lg:max-h-[600px] object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.15)] transition-transform duration-500 hover:scale-105">
+                </div>
+
+                <div class="w-full order-1 lg:order-1 animate-fade-up delay-[200ms] relative" style="animation-fill-mode: both;">
+                    <div class="relative z-10 flex flex-col items-center text-center lg:items-start lg:text-start">
+                        <span class="bg-primary text-on-primary px-3 py-1 rounded-full text-[12px] font-[600]">تعرف على مدربتك</span>
+                        <h2 class="text-[30px] lg:text-[40px] font-[700] mt-4 leading-[1.2]">كوتش سزا</h2>
+                        <p class="text-[16px] lg:text-[18px] text-text-muted mt-4 leading-[1.65]">كوتش سزا مدربة رياضية Level 4 مختصة في التدريب الشخصي. أنا هنا عشان أركز على القوة من الداخل قبل الشكل الخارجي. أؤمن إن التوازن أهم من الكمال، وإن كل جسم يستحق يُعامل بشكل مختلف.</p>
+                        <p class="text-[16px] lg:text-[18px] text-text-muted mt-4 leading-[1.65] font-medium border-t-4 border-s-0 lg:border-t-0 lg:border-s-4 border-primary pt-4 lg:pt-0 lg:ps-4">"أقدم برامج رياضية وتغذية تساعدك تكونين أقوى صحياً، جسدياً، وروحياً. رحلتك معي مو بس تمرين... هي أسلوب حياة."</p>
+                        <a href="https://wa.me/+966550150445" target="_blank" rel="noopener noreferrer" class="inline-block mt-8 bg-primary text-on-primary px-8 py-3 rounded-xl font-semibold hover:bg-primary-hover shadow-sm transition-transform hover:-translate-y-1">احجز استشارة</a>
+                    </div>
+                </div>
+
+                <div class="w-full order-3 lg:order-3 grid grid-cols-2 gap-4 lg:flex lg:flex-col lg:gap-6 mt-8 lg:mt-0 animate-fade-up">
+                    <div class="bg-primary text-center p-4 lg:p-6 rounded-[20px] shadow-card-resting transition-transform hover:scale-105 lg:w-[80%] lg:self-start">
+                        <div class="text-[30px] lg:text-[40px] font-[800] text-on-primary leading-none mb-1 animate-counter" dir="ltr" data-target="8" data-suffix="+">8+</div>
+                        <div class="text-[14px] font-[500] text-on-primary opacity-80">سنوات خبرة</div>
+                    </div>
+                    <div class="bg-surface text-center p-4 lg:p-6 rounded-[20px] shadow-card-resting transition-transform hover:scale-105 lg:w-[80%] lg:self-end">
+                        <div class="text-[30px] lg:text-[40px] font-[800] text-text leading-none mb-1" dir="ltr">Level 4</div>
+                        <div class="text-[14px] font-[500] text-text-muted">المستوى التدريبي</div>
+                    </div>
+                    <div class="bg-text text-center p-4 lg:p-6 rounded-[20px] shadow-card-resting transition-transform hover:scale-105 lg:w-[80%] lg:self-start">
+                        <div class="text-[30px] lg:text-[40px] font-[800] text-surface leading-none mb-1 animate-counter" dir="ltr" data-target="500" data-suffix="+">500+</div>
+                        <div class="text-[14px] font-[500] text-surface opacity-80">تحول ناجح</div>
+                    </div>
+                    <div class="bg-accent text-center p-4 lg:p-6 rounded-[20px] shadow-card-resting transition-transform hover:scale-105 lg:w-[80%] lg:self-end">
+                        <div class="text-[30px] lg:text-[40px] font-[800] text-surface leading-none mb-1 animate-counter" dir="ltr" data-target="1200" data-suffix="+">1,200+</div>
+                        <div class="text-[14px] font-[500] text-surface opacity-80">عميلة تم خدمتها</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 04: Results & Statistics -->
+    <section class="bg-surface-soft py-14 lg:py-24 border-y border-border">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
+            <div class="text-center mb-12 lg:mb-16 animate-fade-up">
+                <span class="bg-primary text-on-primary px-3 py-1 rounded-full text-[12px] font-[600]">النتائج</span>
+                <h2 class="text-[30px] lg:text-[40px] font-[700] mt-4 leading-[1.2]">إنجازات تدل على القوة والالتزام</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-start pb-6 lg:pb-12">
+                <div class="bg-surface p-6 lg:p-8 rounded-[20px] shadow-card-resting text-center animate-fade-up">
+                    <div class="w-12 h-12 rounded-full bg-primary/20 text-accent mx-auto flex items-center justify-center mb-4">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="text-[36px] lg:text-[56px] font-[800] text-text leading-none mb-2 animate-counter" dir="ltr" style="font-variant-numeric: tabular-nums;" data-target="1200" data-suffix="+">1,200+</div>
+                    <div class="text-[14px] font-[500] text-text-muted">إجمالي الأعضاء</div>
+                </div>
+                <div class="bg-surface p-6 lg:p-8 rounded-[20px] shadow-card-resting text-center mt-6 lg:mt-16 animate-fade-up delay-[100ms]" style="animation-fill-mode: both;">
+                    <div class="w-12 h-12 rounded-full bg-primary/20 text-accent mx-auto flex items-center justify-center mb-4">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
+                    </div>
+                    <div class="text-[36px] lg:text-[56px] font-[800] text-text leading-none mb-2 animate-counter" dir="ltr" style="font-variant-numeric: tabular-nums;" data-target="8400" data-suffix="+">8,400+</div>
+                    <div class="text-[14px] font-[500] text-text-muted">الوزن المفقود (كجم)</div>
+                </div>
+                <div class="bg-surface p-6 lg:p-8 rounded-[20px] shadow-card-resting text-center animate-fade-up delay-[200ms]" style="animation-fill-mode: both;">
+                    <div class="w-12 h-12 rounded-full bg-primary/20 text-accent mx-auto flex items-center justify-center mb-4">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+                    </div>
+                    <div class="text-[36px] lg:text-[56px] font-[800] text-text leading-none mb-2 animate-counter" dir="ltr" style="font-variant-numeric: tabular-nums;" data-target="94" data-suffix="%">94%</div>
+                    <div class="text-[14px] font-[500] text-text-muted">معدل إتمام البرامج</div>
+                </div>
+                <div class="bg-surface p-6 lg:p-8 rounded-[20px] shadow-card-resting text-center mt-6 lg:mt-16 animate-fade-up delay-[300ms]" style="animation-fill-mode: both;">
+                    <div class="w-12 h-12 rounded-full bg-primary/20 text-accent mx-auto flex items-center justify-center mb-4">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    </div>
+                    <div class="text-[36px] lg:text-[56px] font-[800] text-text leading-none mb-2 animate-counter" dir="ltr" style="font-variant-numeric: tabular-nums;" data-target="1500" data-suffix="+">1,500+</div>
+                    <div class="text-[14px] font-[500] text-text-muted">عضو في المجتمع</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 07: Transformation Gallery -->
+    <section id="transformations" class="bg-primary py-14 lg:py-20 overflow-hidden">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
+            <div class="mb-12 animate-fade-up">
+                <span class="bg-on-primary text-primary px-3 py-1 rounded-full text-[12px] font-[600]">التحولات</span>
+                <h2 class="text-[30px] lg:text-[40px] font-[700] mt-4 leading-[1.2] text-on-primary">قصص تحول حقيقية لأعضاء النخبة</h2>
+                <p class="text-[16px] lg:text-[18px] text-on-primary/80 mt-4 max-w-2xl leading-[1.65]">أدلة بصرية واقعية وتغيرات جذرية تعكس قوة الالتزام بالبرامج والمتابعة الدقيقة.</p>
+            </div>
+
+            <div class="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-6 lg:grid lg:grid-cols-4 lg:overflow-visible hide-scrollbar no-scrollbar pe-[15vw] lg:pe-0">
+                {[ 
+                    { n: 'ريم العتيبي', r: 'خسارة 14 كجم ونحت البطن', w: '14 kg', d: '12 weeks', p: 'Burn X', img: '/assets/images/before-after/befora-after (1).webp' },
+                    { n: 'سارة المالكي', r: 'شد الترهلات وبناء عضلات رشيقة', w: '6 kg', d: '10 weeks', p: 'VIP Fit Club', img: '/assets/images/before-after/befora-after (2).webp' },
+                    { n: 'لينا الغامدي', r: 'تنشيف الدهون وإبراز العضلات', w: '9 kg', d: '8 weeks', p: 'Tone Your Body', img: '/assets/images/before-after/befora-after (3).webp' },
+                    { n: 'أمل سعيد', r: 'بناء العضلات وزيادة القوة', w: '11 kg', d: '16 weeks', p: 'Muscle Builder', img: '/assets/images/before-after/befora-after (4).webp' }
+                ].map((t, i) => (
+                    <div class="snap-start shrink-0 w-[75vw] sm:w-[350px] lg:w-auto bg-surface p-4 rounded-[20px] shadow-card-resting animate-fade-up hover:shadow-card-hover hover:-translate-y-1 transition-all duration-300 cursor-pointer" style={`animation-delay: ${i*100}ms; animation-fill-mode: both;`}>
+                        <div class="relative rounded-xl overflow-hidden aspect-[4/3] bg-border mb-4">
+                            <img src={t.img} alt={t.n} class="w-full h-full object-cover hover:scale-105 transition-transform duration-500" loading="lazy" />
+                        </div>
+                        <div>
+                            <h3 class="text-[18px] font-bold text-text">{t.n}</h3>
+                            <p class="text-[14px] text-accent font-medium mb-3">{t.r}</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-surface-soft border border-border text-text-muted px-2 py-1 rounded-md text-[12px]" dir="ltr">{t.w}</span>
+                                <span class="bg-surface-soft border border-border text-text-muted px-2 py-1 rounded-md text-[12px]" dir="ltr">{t.d}</span>
+                                <span class="bg-surface-soft border border-border text-text-muted px-2 py-1 rounded-md text-[12px]">{t.p}</span>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </section>
+
+    <TestimonialsCarousel lang="ar" />
+
+    <!-- Section 08: App Dashboard Showcase -->
+    <section class="bg-surface-soft py-14 lg:py-20 border-y border-border">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-10">
+            <div class="text-center mb-12 lg:mb-16 animate-fade-up">
+                <span class="bg-primary text-on-primary px-3 py-1 rounded-full text-[12px] font-[600]">لوحة البيانات</span>
+                <h2 class="text-[30px] lg:text-[40px] font-[700] mt-4 leading-[1.2]">لوحة التحكم وتتبع الأداء الشخصية</h2>
+                <p class="text-[16px] lg:text-[18px] text-text-muted mt-4 max-w-2xl mx-auto leading-[1.65]">تفاعل مع مؤشراتك اليومية وراقب معدل تقدمك والتزامك بنقرة واحدة.</p>
+            </div>
+
+            <div class="mosaic-grid">
+                <!-- Calories (S) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting flex flex-col justify-between animate-fade-up hover:-translate-y-1 transition-transform">
+                    <h3 class="text-[16px] font-bold text-text mb-4">السعرات اليومية</h3>
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-full border-4 border-border border-t-primary flex items-center justify-center font-bold text-[12px] text-text" dir="ltr">65%</div>
+                        <div class="text-[24px] font-bold text-text" dir="ltr">1,680 <span class="text-[14px] text-text-muted font-normal">kcal</span></div>
+                    </div>
+                </div>
+
+                <!-- Water (S) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting flex flex-col justify-between animate-fade-up delay-[100ms] hover:-translate-y-1 transition-transform" style="animation-fill-mode: both;">
+                    <h3 class="text-[16px] font-bold text-text mb-4">استهلاك الماء</h3>
+                    <div class="text-[24px] font-bold text-text mb-2" dir="ltr">2,800 <span class="text-[14px] text-text-muted font-normal">ml</span></div>
+                    <div class="w-full bg-border h-2 rounded-full overflow-hidden">
+                        <div class="bg-primary h-full w-[70%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards]" style="animation-delay: 0.5s;"></div>
+                    </div>
+                </div>
+
+                <!-- Weekly Progress (M) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting flex flex-col justify-between lg:col-span-2 animate-fade-up delay-[200ms] hover:-translate-y-1 transition-transform" style="animation-fill-mode: both;">
+                    <h3 class="text-[16px] font-bold text-text mb-4">التقدم الأسبوعي</h3>
+                    <div class="flex justify-between items-center" dir="ltr">
+                        {[ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ].map((day, i) => (
+                            <div class="flex flex-col items-center gap-2">
+                                <div class="text-[12px] text-text-muted">{day}</div>
+                                <div class={`w-6 h-6 lg:w-8 lg:h-8 rounded-full flex items-center justify-center text-[10px] lg:text-[12px] ${i < 4 ? 'bg-primary text-on-primary' : i === 4 ? 'bg-border text-text font-bold' : 'bg-surface-soft border border-border text-text-muted'}`}>
+                                    {i < 4 ? '✓' : ''}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <!-- Activity Report (L) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting col-span-1 lg:col-span-2 lg:row-span-2 flex flex-col justify-between animate-fade-up hover:-translate-y-1 transition-transform group">
+                    <h3 class="text-[16px] font-bold text-text mb-4">تقرير النشاط</h3>
+                    <div class="h-40 bg-surface-soft rounded-xl relative overflow-hidden flex items-end px-4 gap-2 pb-2">
+                        <div class="w-full bg-primary/20 rounded-t-sm h-[40%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards] transition-colors group-hover:bg-primary/40" style="animation-delay: 0.1s"></div>
+                        <div class="w-full bg-primary/20 rounded-t-sm h-[60%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards] transition-colors group-hover:bg-primary/40" style="animation-delay: 0.2s"></div>
+                        <div class="w-full bg-primary/20 rounded-t-sm h-[80%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards] transition-colors group-hover:bg-primary/40" style="animation-delay: 0.3s"></div>
+                        <div class="w-full bg-primary rounded-t-sm h-[100%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards]" style="animation-delay: 0.4s"></div>
+                        <div class="w-full bg-primary/20 rounded-t-sm h-[50%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards] transition-colors group-hover:bg-primary/40" style="animation-delay: 0.5s"></div>
+                        <div class="w-full bg-primary/20 rounded-t-sm h-[30%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards] transition-colors group-hover:bg-primary/40" style="animation-delay: 0.6s"></div>
+                        <div class="w-full bg-primary/20 rounded-t-sm h-[70%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards] transition-colors group-hover:bg-primary/40" style="animation-delay: 0.7s"></div>
+                    </div>
+                    <div class="mt-4 flex justify-between items-center border-t border-border pt-4">
+                        <div class="text-text-muted text-[14px]">المسافة الأسبوعية</div>
+                        <div class="text-[24px] font-bold text-text" dir="ltr">72 <span class="text-[14px] text-text-muted font-normal">km</span></div>
+                    </div>
+                </div>
+
+                <!-- Streak (S) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting flex flex-col justify-between animate-fade-up delay-[100ms] hover:-translate-y-1 transition-transform" style="animation-fill-mode: both;">
+                    <h3 class="text-[16px] font-bold text-text mb-4">سلسلة النشاط</h3>
+                    <div class="flex items-center gap-3">
+                        <div class="text-accent text-[32px] animate-pulse">🔥</div>
+                        <div class="text-[24px] font-bold text-text" dir="ltr">18 <span class="text-[14px] text-text-muted font-normal">days</span></div>
+                    </div>
+                </div>
+
+                <!-- Performance (S) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting flex flex-col justify-between animate-fade-up delay-[200ms] hover:-translate-y-1 transition-transform" style="animation-fill-mode: both;">
+                    <h3 class="text-[16px] font-bold text-text mb-4">مؤشرات الأداء</h3>
+                    <div class="w-full bg-border h-2 rounded-full overflow-hidden mb-2 mt-auto">
+                        <div class="bg-accent h-full w-[85%] animate-[growBar_1.2s_cubic-bezier(0.16,1,0.3,1)_backwards]" style="animation-delay: 0.8s;"></div>
+                    </div>
+                    <div class="text-[12px] text-text-muted text-end" dir="ltr">85% Goal</div>
+                </div>
+
+                <!-- Coach Feedback (M) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting lg:col-span-1 animate-fade-up delay-[100ms] hover:-translate-y-1 transition-transform" style="animation-fill-mode: both;">
+                    <h3 class="text-[16px] font-bold text-text mb-4">ملاحظات المدربة</h3>
+                    <div class="flex gap-3 mt-auto">
+                        <img src="/assets/images/coach-sza/coach-sza (7).webp" alt="Coach" class="w-10 h-10 rounded-full object-cover shrink-0" onerror="this.outerHTML='<div class=\\'w-10 h-10 rounded-full bg-border shrink-0\\'></div>'">
+                        <div class="bg-surface-soft p-3 rounded-xl rounded-tr-none text-[14px] text-text leading-[1.6]">
+                            ممتاز! استمر في زيادة الحمل التدريبي بنفس المعدل.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weight Progress (M) -->
+                <div class="bg-surface p-6 rounded-[20px] shadow-card-resting lg:col-span-1 flex flex-col justify-between animate-fade-up delay-[200ms] hover:-translate-y-1 transition-transform" style="animation-fill-mode: both;">
+                    <h3 class="text-[16px] font-bold text-text mb-4">تطور الوزن</h3>
+                    <div class="flex items-center gap-4 h-16">
+                        <div class="text-[24px] font-bold text-text" dir="ltr">72 <span class="text-[14px] text-text-muted font-normal">kg</span></div>
+                        <svg class="flex-1 h-full text-accent" viewBox="0 0 100 30" preserveAspectRatio="none">
+                            <path d="M0,20 Q10,25 20,15 T40,20 T60,10 T80,15 T100,5" fill="none" stroke="currentColor" stroke-width="3" vector-effect="non-scaling-stroke"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <FinalCta lang="ar" />
+
+  </main>
+</BaseLayout>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll('.animate-counter');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    if (target.classList.contains('counted')) return;
+                    target.classList.add('counted');
+                    
+                    const targetValue = parseInt(target.getAttribute('data-target') || '0', 10);
+                    const suffix = target.getAttribute('data-suffix') || '';
+                    const duration = 2000;
+                    const startTime = performance.now();
+                    
+                    const updateCounter = (currentTime) => {
+                        const elapsedTime = currentTime - startTime;
+                        if (elapsedTime < duration) {
+                            const progress = elapsedTime / duration;
+                            const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+                            const currentVal = Math.floor(targetValue * easeOutCubic);
+                            target.innerText = currentVal.toLocaleString('en-US') + suffix;
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            target.innerText = targetValue.toLocaleString('en-US') + suffix;
+                        }
+                    };
+                    requestAnimationFrame(updateCounter);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        counters.forEach(counter => observer.observe(counter));
+    });
+</script>
+
+<style>
+    @keyframes heroFade {
+        0% { opacity: 0; }
+        5.55% { opacity: 1; }
+        16.66% { opacity: 1; }
+        22.22% { opacity: 0; }
+        100% { opacity: 0; }
+    }
+    .slide-img {
+        animation: heroFade 18s infinite;
+        opacity: 0;
+    }
+    .slide-img:nth-of-type(2) { animation-delay: 0s; }
+    .slide-img:nth-of-type(3) { animation-delay: 3s; }
+    .slide-img:nth-of-type(4) { animation-delay: 6s; }
+    .slide-img:nth-of-type(5) { animation-delay: 9s; }
+    .slide-img:nth-of-type(6) { animation-delay: 12s; }
+    .slide-img:nth-of-type(7) { animation-delay: 15s; }
+</style>
+
+<style is:global>
+    .glow-hero { background-image: radial-gradient(ellipse 700px 500px at 50% 60%, rgba(198,255,52,0.08) 0%, transparent 70%); }
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .mosaic-grid { display: grid; gap: 1.5rem; grid-template-columns: 1fr; }
+    @media (min-width: 1024px) {
+        .mosaic-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+</style>

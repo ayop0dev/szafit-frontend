@@ -1,0 +1,74 @@
+---
+import type { Lang } from '../../types/wp';
+
+interface Props {
+    lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const copy = {
+    ar: {
+        title: "ماذا يضمن لك البرنامج؟",
+        modules: [
+            {
+                icon: "sliders",
+                title: "برنامج تدريبي مخصص",
+            },
+            {
+                icon: "smartphone",
+                title: "تطبيق جوال للتمرين والمتابعة",
+            },
+            {
+                icon: "user-check",
+                title: "متابعة شخصية مع ك. سزا",
+            },
+            {
+                icon: "shield-check",
+                title: "ضمان استرجاع الاموال",
+            }
+        ]
+    },
+    en: {
+        title: "What Does the Program Guarantee?",
+        modules: [
+            {
+                icon: "sliders",
+                title: "Customized Training Program",
+            },
+            {
+                icon: "smartphone",
+                title: "Mobile App for Training & Tracking",
+            },
+            {
+                icon: "user-check",
+                title: "Personal Coaching with SZA",
+            },
+            {
+                icon: "shield-check",
+                title: "Money-Back Guarantee",
+            }
+        ]
+    }
+};
+
+const c = lang === 'ar' ? copy.ar : copy.en;
+---
+<!-- Program Features Grid -->
+<section class="max-w-container mx-auto px-6 py-12 fade-target bg-surface/30 rounded-3xl my-10 border border-border" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <h2 class="text-3xl font-black text-text mb-10 text-center">{c.title}</h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {c.modules.map(module => (
+            <div class="bg-surface p-8 rounded-2xl shadow-card-resting border border-border flex flex-col items-center text-center transition-transform hover:-translate-y-1 hover:shadow-lg">
+                <div class="w-16 h-16 rounded-full bg-primary/20 text-text flex items-center justify-center mb-6">
+                    {module.icon === 'sliders' && <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>}
+                    {module.icon === 'smartphone' && <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>}
+                    {module.icon === 'user-check' && <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg>}
+                    {module.icon === 'shield-check' && <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>}
+                </div>
+                <h3 class="text-xl font-bold text-text">{module.title}</h3>
+            </div>
+        ))}
+    </div>
+</section>

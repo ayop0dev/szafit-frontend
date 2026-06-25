@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import TextPageTemplate from '../../../components/pages/TextPageTemplate.astro';
+import { getPageContent } from '../../../lib/content';
+
+const currentPath = Astro.url.pathname;
+const pageContent = getPageContent('privacy');
+---
+
+<BaseLayout lang="ar" title={`${pageContent.titleAr} — SZAFIT`} currentPath={currentPath} showNav>
+  <TextPageTemplate lang="ar" page="privacy" />
+</BaseLayout>
