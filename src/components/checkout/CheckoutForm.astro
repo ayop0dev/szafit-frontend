@@ -43,9 +43,9 @@ const copy = {
     email: 'البريد الإلكتروني (اختياري)',
     emailPlaceholder: 'example@email.com',
     emailError: 'البريد الإلكتروني غير صحيح',
-    submit: 'تأكيد الطلب',
-    submitting: 'جارٍ الإرسال…',
-    codNote: 'الدفع عند الاستلام · آمن 100%',
+    submit: 'المتابعة إلى الدفع',
+    submitting: 'جارٍ تجهيز الدفع…',
+    paymentNote: 'Paylink الدفع · آمن 100%',
     serverError: 'حدث خطأ. حاول مجددًا.',
     invalidResponse: 'استجابة غير متوقعة من الخادم.',
     missingImage: 'صورة البرنامج غير متوفرة',
@@ -68,9 +68,9 @@ const copy = {
     email: 'Email (optional)',
     emailPlaceholder: 'example@email.com',
     emailError: 'Invalid email address',
-    submit: 'Confirm Order',
-    submitting: 'Submitting…',
-    codNote: 'Cash on Delivery · 100% Secure',
+    submit: 'Continue to Payment',
+    submitting: 'Opening Paylink...',
+    paymentNote: 'Paylink payment · 100% Secure',
     serverError: 'An error occurred. Please try again.',
     invalidResponse: 'Unexpected response from server.',
     missingImage: 'Program image unavailable',
@@ -216,7 +216,7 @@ const formId = "checkout-form-container";
               {c.submit}
             </button>
             <p class="text-xs text-text-muted">
-              {c.codNote}
+              {c.paymentNote}
             </p>
           </div>
 
@@ -353,6 +353,7 @@ const formId = "checkout-form-container";
         product_id: selectedProgram.productId,
         quantity: 1,
         locale: lang,
+        payment_method: 'paylink',
         billing: {
           first_name: firstName,
           phone,
@@ -383,7 +384,15 @@ const formId = "checkout-form-container";
           throw new Error(data?.message || c.serverError);
         }
 
-        window.location.href = `/${lang}/thank-you/?order_id=${encodeURIComponent(data.order_id)}`;
+        if (!data.redirect_url) {
+          throw new Error(c.serverError);
+        }
+
+        const paymentUrl = new URL(`/${lang}/checkout/pay/`, window.location.origin);
+        paymentUrl.searchParams.set('order_id', String(data.order_id));
+        paymentUrl.searchParams.set('redirect_url', data.redirect_url);
+
+        window.location.href = paymentUrl.toString();
 
       } catch (err) {
         const message = err instanceof Error ? err.message : c.serverError;

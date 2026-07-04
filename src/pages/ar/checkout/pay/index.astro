@@ -1,10 +1,7 @@
 ---
 /**
- * TODO (Module 6.3): Implement POST /api/pay-order proxy endpoint.
- * Payload:   { order_id: string, key: string, pay_for_order?: string }
- * Response:  { success: boolean, redirect_url?: string, message?: string }
- * If redirect_url is returned the client redirects there (payment gateway).
- * Until the endpoint exists, failures surface the WhatsApp support link.
+ * Headless payment handoff page.
+ * Receives order_id + redirect_url from the checkout flow and forwards the user to Paylink.
  */
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { getSiteSettings } from '../../../../lib/content';
@@ -14,7 +11,7 @@ const siteSettings = getSiteSettings();
 const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g, '')}`;
 ---
 
-<BaseLayout lang="ar" title="إتمام الدفع — SZAFIT" currentPath={currentPath} showNav>
+<BaseLayout lang="ar" title="إتمام الدفع - SZAFIT" currentPath={currentPath} showNav>
   <main class="flex-1 bg-surface-soft">
     <div class="max-w-container mx-auto px-6 py-16 lg:py-24" dir="rtl">
       <div class="max-w-xl mx-auto">
@@ -35,7 +32,7 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
           </span>
           <h1 class="text-2xl lg:text-3xl font-bold text-text mb-2">أكمل دفعتك</h1>
           <p class="text-text-muted text-sm leading-relaxed">
-            طلبك في انتظار إتمام الدفع. اضغط أدناه للمتابعة.
+            طلبك في انتظار إتمام الدفع. اضغط أدناه للمتابعة إلى بوابة Paylink.
           </p>
         </div>
 
@@ -51,7 +48,7 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
             </div>
             <h2 class="text-lg font-bold text-text mb-2">رابط الدفع غير صالح</h2>
             <p class="text-sm text-text-muted mb-6 leading-relaxed">
-              لم نتمكن من تحديد الطلب المرتبط بهذا الرابط. تواصل مع الدعم وسنساعدك فوراً.
+              لم نتمكن من تحديد الطلب المرتبط بهذا الرابط. تواصل مع الدعم وسنساعدك فورًا.
             </p>
             <a
               href={whatsappHref}
@@ -64,9 +61,8 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
           </div>
         </div>
 
-        <!-- Pay card (shown when order_id + key are present) -->
+        <!-- Pay card (shown when order_id + redirect_url are present) -->
         <div id="pay-state" class="hidden">
-
           <!-- Order summary card -->
           <div class="bg-surface border border-border rounded-2xl overflow-hidden shadow-card-resting mb-6">
             <div class="px-6 py-4 border-b border-border bg-surface-soft/60">
@@ -86,7 +82,6 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
             </div>
           </div>
 
-
           <!-- Error banner -->
           <div id="pay-error" class="hidden mb-4 p-4 bg-error-bg border border-error-border/30 rounded-xl text-sm text-error-text text-center leading-relaxed"></div>
 
@@ -96,8 +91,8 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
             type="button"
             class="w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-base hover:bg-primary-hover transition-all hover:-translate-y-0.5 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 mb-4"
           >
-            <span id="pay-label">إتمام الدفع الآن</span>
-            <span id="pay-loading" class="hidden">جارٍ المعالجة...</span>
+            <span id="pay-label">المتابعة إلى الدفع</span>
+            <span id="pay-loading" class="hidden">جارٍ فتح صفحة الدفع...</span>
           </button>
 
           <!-- Security note -->
@@ -107,7 +102,7 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
               <path stroke-linecap="round" stroke-linejoin="round"
                     d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
             </svg>
-            دفع آمن ومشفر
+            دفع آمن ومشفّر
           </div>
 
           <!-- Success state -->
@@ -118,22 +113,20 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 6L9 17l-5-5"/>
               </svg>
             </div>
-            <h2 class="text-lg font-bold text-text mb-2">تم استلام الدفعة بنجاح</h2>
-            <p class="text-sm text-text-muted mb-6">سيصلك تأكيد عبر البريد الإلكتروني قريباً.</p>
+            <h2 class="text-lg font-bold text-text mb-2">تم استلام الدفعة</h2>
+            <p class="text-sm text-text-muted mb-6">سيصلك تأكيد عبر البريد الإلكتروني قريبًا.</p>
             <a href="/ar/" class="inline-flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-primary-hover transition-all hover:-translate-y-0.5">
-              العودة للرئيسية
+              العودة إلى الرئيسية
             </a>
           </div>
-
         </div>
 
         <!-- Support row (always visible) -->
         <p class="text-center text-xs text-text-muted mt-6">
-          مشكلة في الدفع؟
+          هل تواجه مشكلة؟
           <a href={whatsappHref} target="_blank" rel="noopener noreferrer"
              class="text-accent font-medium hover:underline">تواصل مع الدعم</a>
         </p>
-
       </div>
     </div>
   </main>
@@ -141,68 +134,55 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function () {
-    var params      = new URLSearchParams(window.location.search);
-    var orderId     = params.get('order_id')     || '';
-    var key         = params.get('key')          || '';
-    var payForOrder = params.get('pay_for_order') || '';
+    var params = new URLSearchParams(window.location.search);
+    var orderId = params.get('order_id') || '';
+    var redirectUrl = params.get('redirect_url') || '';
 
     var invalidEl = document.getElementById('invalid-state');
-    var payEl     = document.getElementById('pay-state');
+    var payEl = document.getElementById('pay-state');
+    var payBtn = document.getElementById('pay-btn');
+    var payLabel = document.getElementById('pay-label');
+    var payLoading = document.getElementById('pay-loading');
+    var payError = document.getElementById('pay-error');
+    var paySuccess = document.getElementById('pay-success');
 
-    if (!orderId || !key) {
+    function isAllowedRedirectUrl(value) {
+      try {
+        var parsed = new URL(value, window.location.origin);
+        return parsed.protocol === 'https:' && (parsed.hostname === 'z.szafit.com' || parsed.hostname === 'www.szafit.com');
+      } catch (error) {
+        return false;
+      }
+    }
+
+    if (!orderId || !redirectUrl || !isAllowedRedirectUrl(redirectUrl)) {
       if (invalidEl) invalidEl.classList.remove('hidden');
       return;
     }
 
-    // Show order ID to user
     var display = document.getElementById('order-id-display');
     if (display) display.textContent = '#' + orderId;
 
     if (payEl) payEl.classList.remove('hidden');
 
-    var payBtn     = document.getElementById('pay-btn');
-    var payLabel   = document.getElementById('pay-label');
-    var payLoading = document.getElementById('pay-loading');
-    var payError   = document.getElementById('pay-error');
-    var paySuccess = document.getElementById('pay-success');
-    var payCard    = payEl ? payEl.querySelector('button') : null;
+    if (paySuccess) paySuccess.classList.add('hidden');
+    if (payLabel) payLabel.classList.remove('hidden');
+    if (payLoading) payLoading.classList.add('hidden');
 
     if (!payBtn) return;
 
-    payBtn.addEventListener('click', function () {
-      if (payError)   payError.classList.add('hidden');
-      payBtn.disabled = true;
-      if (payLabel)   payLabel.classList.add('hidden');
-      if (payLoading) payLoading.classList.remove('hidden');
+    function goToPaylink() {
+      window.location.href = redirectUrl;
+    }
 
-      // TODO: Replace '/api/pay-order' with the live proxy endpoint once available.
-      // Expected payload: { order_id, key, pay_for_order }
-      // Expected response: { success: boolean, redirect_url?: string, message?: string }
-      fetch('/api/pay-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: orderId, key: key, pay_for_order: payForOrder }),
-      })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          if (data.redirect_url) {
-            window.location.href = data.redirect_url;
-          } else if (data.success) {
-            if (payBtn)     payBtn.classList.add('hidden');
-            if (paySuccess) paySuccess.classList.remove('hidden');
-          } else {
-            throw new Error(data.message || 'فشلت العملية');
-          }
-        })
-        .catch(function () {
-          payBtn.disabled = false;
-          if (payLabel)   payLabel.classList.remove('hidden');
-          if (payLoading) payLoading.classList.add('hidden');
-          if (payError) {
-            payError.textContent = 'تعذّر إتمام الدفع. تواصل مع الدعم عبر واتساب للمساعدة الفورية.';
-            payError.classList.remove('hidden');
-          }
-        });
+    var redirectTimer = window.setTimeout(goToPaylink, 1200);
+
+    payBtn.addEventListener('click', function () {
+      window.clearTimeout(redirectTimer);
+      if (payError) payError.classList.add('hidden');
+      if (payLabel) payLabel.classList.add('hidden');
+      if (payLoading) payLoading.classList.remove('hidden');
+      goToPaylink();
     });
   });
 </script>

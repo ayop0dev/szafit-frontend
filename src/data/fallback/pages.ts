@@ -61,8 +61,8 @@ export const fallbackTerms: WpTermsPage = {
       <p>باستخدامك للموقع وشراء البرامج فإنك توافق على الشروط والأحكام المذكورة. يحق للمنصة تعديل هذه الشروط في أي وقت.</p>
       <h2>الوصول للتطبيق</h2>
       <p>يتم تفعيل الوصول للتطبيق بعد تأكيد الدفع بنجاح. اشتراكك مخصص للاستخدام الشخصي فقط ولا يُسمح بمشاركته مع الآخرين.</p>
-      <h2>الدفع عند الاستلام</h2>
-      <p>تخضع طلبات الدفع عند الاستلام لعملية تأكيد عبر الهاتف. في حال تعذر التواصل، قد يتم إلغاء الطلب.</p>
+      <h2>بوابة الدفع</h2>
+      <p>تتم المعاملات المالية عبر بوابة دفع مؤمنة. قد يطلب مزود الدفع بعض التحققات الإضافية حسب متطلباته.</p>
       <h2>مسؤولية المستخدم</h2>
       <p>أنت مسؤول بالكامل عن صحة البيانات المدخلة وتلتزم باتباع تعليمات البرنامج على مسؤوليتك الطبية الشخصية.</p>
       <h2>الاسترجاع والإلغاء</h2>
@@ -75,8 +75,8 @@ export const fallbackTerms: WpTermsPage = {
       <p>By using the site and purchasing programs, you agree to the stated terms and conditions. The platform reserves the right to modify these terms at any time.</p>
       <h2>App Access</h2>
       <p>App access is activated after successful payment confirmation. Your subscription is for personal use only and may not be shared.</p>
-      <h2>Cash on Delivery</h2>
-      <p>Cash on delivery orders are subject to a phone confirmation process. If we cannot reach you, the order may be canceled.</p>
+      <h2>Payment Gateway</h2>
+      <p>Payments are processed through the configured payment gateway. Some orders may require additional verification depending on the provider and risk checks.</p>
       <h2>User Responsibility</h2>
       <p>You are fully responsible for the accuracy of entered data and commit to following program instructions at your own medical risk.</p>
       <h2>Refunds and Cancellations</h2>
@@ -92,7 +92,7 @@ export const fallbackThankYou: WpThankYouPage = {
     bodyAr: 'سيتم التواصل معك قريبًا لتأكيد البرنامج والبدء في رحلتك.',
     nextStepsAr: [
         'تأكيد البريد الإلكتروني إن كان مُدخلًا',
-        'اكتمال عملية الدفع عند الاستلام',
+      'إتمام الدفع عبر بوابة الدفع الآمنة',
         'الوصول إلى التطبيق والبدء في رحلتك',
     ],
     whatsappLabelAr: 'تواصل عبر واتساب',
@@ -101,9 +101,9 @@ export const fallbackThankYou: WpThankYouPage = {
     subheadingEn: 'Your order was received successfully',
     bodyEn: 'We will contact you shortly to confirm your program and start your journey.',
     nextStepsEn: [
-        'Confirm your email if provided',
-        'Complete cash on delivery payment',
-        'Access the app and begin your journey',
+      'Confirm your email if provided',
+      'Complete payment through the secure gateway',
+      'Access the app and begin your journey',
     ],
     whatsappLabelEn: 'Contact on WhatsApp',
     appDownloadLabelEn: 'Download App Now',

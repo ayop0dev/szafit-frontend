@@ -1,10 +1,7 @@
 ---
 /**
- * TODO (Module 6.3): Implement POST /api/pay-order proxy endpoint.
- * Payload:   { order_id: string, key: string, pay_for_order?: string }
- * Response:  { success: boolean, redirect_url?: string, message?: string }
- * If redirect_url is returned the client redirects there (payment gateway).
- * Until the endpoint exists, failures surface the WhatsApp support link.
+ * Headless payment handoff page.
+ * Receives order_id + redirect_url from the checkout flow and forwards the user to Paylink.
  */
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import { getSiteSettings } from '../../../../lib/content';
@@ -97,8 +94,8 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
             type="button"
             class="w-full bg-primary text-on-primary py-4 rounded-xl font-bold text-base hover:bg-primary-hover transition-all hover:-translate-y-0.5 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0 mb-4"
           >
-            <span id="pay-label">Complete Payment Now</span>
-            <span id="pay-loading" class="hidden">Processing...</span>
+            <span id="pay-label">Continue to Paylink</span>
+            <span id="pay-loading" class="hidden">Opening payment page...</span>
           </button>
 
           <!-- Security note -->
@@ -142,15 +139,28 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
 
 <script is:inline>
   document.addEventListener('DOMContentLoaded', function () {
-    var params      = new URLSearchParams(window.location.search);
-    var orderId     = params.get('order_id')     || '';
-    var key         = params.get('key')          || '';
-    var payForOrder = params.get('pay_for_order') || '';
+    var params = new URLSearchParams(window.location.search);
+    var orderId = params.get('order_id') || '';
+    var redirectUrl = params.get('redirect_url') || '';
 
     var invalidEl = document.getElementById('invalid-state');
-    var payEl     = document.getElementById('pay-state');
+    var payEl = document.getElementById('pay-state');
+    var payBtn = document.getElementById('pay-btn');
+    var payLabel = document.getElementById('pay-label');
+    var payLoading = document.getElementById('pay-loading');
+    var payError = document.getElementById('pay-error');
+    var paySuccess = document.getElementById('pay-success');
 
-    if (!orderId || !key) {
+    function isAllowedRedirectUrl(value) {
+      try {
+        var parsed = new URL(value, window.location.origin);
+        return parsed.protocol === 'https:' && (parsed.hostname === 'z.szafit.com' || parsed.hostname === 'www.szafit.com');
+      } catch {
+        return false;
+      }
+    }
+
+    if (!orderId || !redirectUrl || !isAllowedRedirectUrl(redirectUrl)) {
       if (invalidEl) invalidEl.classList.remove('hidden');
       return;
     }
@@ -160,48 +170,24 @@ const whatsappHref = `https://wa.me/${siteSettings.whatsappNumber.replace(/\D/g,
 
     if (payEl) payEl.classList.remove('hidden');
 
-    var payBtn     = document.getElementById('pay-btn');
-    var payLabel   = document.getElementById('pay-label');
-    var payLoading = document.getElementById('pay-loading');
-    var payError   = document.getElementById('pay-error');
-    var paySuccess = document.getElementById('pay-success');
+    if (paySuccess) paySuccess.classList.add('hidden');
+    if (payLabel) payLabel.classList.remove('hidden');
+    if (payLoading) payLoading.classList.add('hidden');
 
     if (!payBtn) return;
 
-    payBtn.addEventListener('click', function () {
-      if (payError)   payError.classList.add('hidden');
-      payBtn.disabled = true;
-      if (payLabel)   payLabel.classList.add('hidden');
-      if (payLoading) payLoading.classList.remove('hidden');
+    function goToPaylink() {
+      window.location.href = redirectUrl;
+    }
 
-      // TODO: Replace '/api/pay-order' with the live proxy endpoint once available.
-      // Expected payload: { order_id, key, pay_for_order }
-      // Expected response: { success: boolean, redirect_url?: string, message?: string }
-      fetch('/api/pay-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: orderId, key: key, pay_for_order: payForOrder }),
-      })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-          if (data.redirect_url) {
-            window.location.href = data.redirect_url;
-          } else if (data.success) {
-            if (payBtn)     payBtn.classList.add('hidden');
-            if (paySuccess) paySuccess.classList.remove('hidden');
-          } else {
-            throw new Error(data.message || 'Request failed');
-          }
-        })
-        .catch(function () {
-          payBtn.disabled = false;
-          if (payLabel)   payLabel.classList.remove('hidden');
-          if (payLoading) payLoading.classList.add('hidden');
-          if (payError) {
-            payError.textContent = 'Unable to process payment. Contact support via WhatsApp for immediate help.';
-            payError.classList.remove('hidden');
-          }
-        });
+    var redirectTimer = window.setTimeout(goToPaylink, 1200);
+
+    payBtn.addEventListener('click', function () {
+      window.clearTimeout(redirectTimer);
+      if (payError) payError.classList.add('hidden');
+      if (payLabel) payLabel.classList.add('hidden');
+      if (payLoading) payLoading.classList.remove('hidden');
+      goToPaylink();
     });
   });
 </script>

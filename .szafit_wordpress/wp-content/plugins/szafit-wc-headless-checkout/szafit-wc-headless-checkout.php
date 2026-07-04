@@ -20,6 +20,56 @@ function szafit_allowed_origins() {
     ];
 }
 
+function szafit_frontend_base_url() {
+    return apply_filters('szafit_frontend_base_url', 'https://szafit.com');
+}
+
+add_filter('allowed_redirect_hosts', 'szafit_allowed_redirect_hosts');
+
+function szafit_allowed_redirect_hosts($hosts) {
+    $frontend_host = wp_parse_url(szafit_frontend_base_url(), PHP_URL_HOST);
+    if (empty($frontend_host)) {
+        return $hosts;
+    }
+
+    $frontend_host = strtolower($frontend_host);
+    $hosts[] = $frontend_host;
+
+    if (strpos($frontend_host, 'www.') === 0) {
+        $hosts[] = substr($frontend_host, 4);
+    } else {
+        $hosts[] = 'www.' . $frontend_host;
+    }
+
+    return array_values(array_unique(array_filter($hosts)));
+}
+
+function szafit_frontend_thank_you_url($locale, $order_id = 0) {
+    $locale = in_array($locale, ['ar', 'en'], true) ? $locale : 'ar';
+    $base_url = trailingslashit(szafit_frontend_base_url()) . $locale . '/thank-you/';
+
+    if ($order_id > 0) {
+        return add_query_arg('order_id', (int) $order_id, $base_url);
+    }
+
+    return $base_url;
+}
+
+function szafit_get_gateway($gateway_id) {
+    if (!function_exists('WC') || !WC()->payment_gateways()) {
+        return null;
+    }
+
+    $gateways = WC()->payment_gateways()->payment_gateways();
+    $gateway   = $gateways[$gateway_id] ?? null;
+
+    if (!$gateway || !method_exists($gateway, 'is_available') || !$gateway->is_available()) {
+        return null;
+    }
+
+    return $gateway;
+}
+
 // ================================================
 // CORS — OPTIONS PREFLIGHT
 // Fires at init (priority 1) — before WP routing — so the browser
@@ -202,6 +252,15 @@ function szafit_create_order(WP_REST_Request $request) {
         $raw_locale = sanitize_text_field($data['locale'] ?? '');
         $locale     = in_array($raw_locale, ['ar', 'en'], true) ? $raw_locale : 'ar';
 
+        $payment_gateway = szafit_get_gateway('paylink');
+        if (!$payment_gateway) {
+            return new WP_Error(
+                'payment_gateway_unavailable',
+                'Paylink payment gateway is unavailable.',
+                ['status' => 503]
+            );
+        }
+
         $first_name = sanitize_text_field($billing['first_name'] ?? '');
         $phone      = sanitize_text_field($billing['phone']      ?? '');
         $email      = sanitize_email($billing['email']           ?? '');
@@ -228,14 +287,15 @@ function szafit_create_order(WP_REST_Request $request) {
         $order->set_billing_first_name($first_name);
         $order->set_billing_phone($phone);
         $order->set_billing_email($email);
+        $order->set_payment_method($payment_gateway->id);
+        $order->set_payment_method_title($payment_gateway->get_title() ?: 'Paylink Payment Gateway');
+        $order->update_meta_data('_szafit_language', $locale);
+        $order->update_meta_data('_szafit_return_url_base', szafit_frontend_thank_you_url($locale));
+        $order->update_meta_data('_szafit_payment_gateway', 'paylink');
 
         $order->add_product($product, $quantity);
 
-        $order->set_payment_method('cod');
-        $order->set_payment_method_title('Cash on Delivery');
-
         $order->calculate_totals();
-        $order->update_meta_data('_szafit_language', $locale);
 
         $order_id = $order->save();
 
@@ -245,6 +305,7 @@ function szafit_create_order(WP_REST_Request $request) {
             'order_id' => (int) $order_id,
             'status'   => sanitize_text_field($order->get_status()),
             'total'    => wc_format_decimal($order->get_total(), wc_get_price_decimals()),
+            'redirect_url' => esc_url_raw($order->get_checkout_payment_url(true)),
         ], 201);
 
     } catch (Exception $e) {
