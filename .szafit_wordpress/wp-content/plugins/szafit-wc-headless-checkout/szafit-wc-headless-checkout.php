@@ -70,6 +70,49 @@ function szafit_get_gateway($gateway_id) {
     return $gateway;
 }
 
+function szafit_get_gateway_instance($gateway_id) {
+    if (!function_exists('WC') || !WC()->payment_gateways()) {
+        return null;
+    }
+
+    $gateways = WC()->payment_gateways()->payment_gateways();
+    if (isset($gateways[$gateway_id])) {
+        return $gateways[$gateway_id];
+    }
+
+    if ($gateway_id === 'paylink' && class_exists('WC_Gateway_Paylink')) {
+        return new WC_Gateway_Paylink();
+    }
+
+    return null;
+}
+
+function szafit_normalize_saudi_mobile($phone) {
+    $digits = preg_replace('/\D+/', '', (string) $phone);
+
+    if (empty($digits)) {
+        return '';
+    }
+
+    if (str_starts_with($digits, '00966')) {
+        $digits = substr($digits, 2);
+    }
+
+    if (str_starts_with($digits, '966')) {
+        return strlen($digits) >= 12 ? '+' . $digits : '';
+    }
+
+    if (str_starts_with($digits, '05') && strlen($digits) === 10) {
+        return '+966' . substr($digits, 1);
+    }
+
+    if (str_starts_with($digits, '5') && strlen($digits) === 9) {
+        return '+966' . $digits;
+    }
+
+    return '';
+}
+
 function szafit_get_client_ip() {
     $header_candidates = [
         'HTTP_CF_CONNECTING_IP',
@@ -98,7 +141,7 @@ function szafit_get_client_ip() {
 
 function szafit_checkout_rate_limit_key($client_ip) {
     // Bump the version suffix to intentionally reset any old buckets after rate-limit tuning.
-    return 'szafit_checkout_rate_v2_' . md5((string) $client_ip);
+    return 'szafit_checkout_rate_v3_' . md5((string) $client_ip);
 }
 
 function szafit_checkout_rate_limit_max_attempts() {
@@ -197,6 +240,13 @@ add_action('rest_api_init', function () {
     register_rest_route('szafit/v1', '/checkout/create-order', [
         'methods'             => 'POST',
         'callback'            => 'szafit_create_order',
+        'permission_callback' => '__return_true',
+    ]);
+
+    // Paylink callback endpoint
+    register_rest_route('szafit/v1', '/paylink/callback', [
+        'methods'             => ['GET', 'POST'],
+        'callback'            => 'szafit_handle_paylink_callback',
         'permission_callback' => '__return_true',
     ]);
 });
@@ -300,7 +350,7 @@ function szafit_create_order(WP_REST_Request $request) {
         }
 
         $first_name = sanitize_text_field($billing['first_name'] ?? '');
-        $phone      = sanitize_text_field($billing['phone']      ?? '');
+        $phone      = szafit_normalize_saudi_mobile($billing['phone'] ?? '');
         $email      = sanitize_email($billing['email']           ?? '');
 
         if (empty($first_name)) {
@@ -308,7 +358,7 @@ function szafit_create_order(WP_REST_Request $request) {
         }
 
         if (empty($phone)) {
-            return new WP_Error('missing_phone', 'Phone number is required.', ['status' => 400]);
+            return new WP_Error('invalid_phone', 'Phone number must be a valid Saudi mobile number.', ['status' => 400]);
         }
 
         if (!empty($email) && !is_email($email)) {
@@ -340,15 +390,133 @@ function szafit_create_order(WP_REST_Request $request) {
         $order_id = $order->save();
 
         // Sanitized response only — no order_key
+        if (!method_exists($payment_gateway, 'create_invoice_url')) {
+            $order->update_status('failed');
+            $order->save();
+
+            return new WP_Error(
+                'payment_gateway_unavailable',
+                'Paylink payment gateway is missing invoice helpers.',
+                ['status' => 503]
+            );
+        }
+
+        $callback_url = rest_url('szafit/v1/paylink/callback');
+
+        try {
+            $redirect_url = $payment_gateway->create_invoice_url($order, $callback_url);
+        } catch (Exception $gateway_exception) {
+            $order->update_status('failed');
+            $order->add_order_note('Paylink invoice creation failed: ' . $gateway_exception->getMessage());
+            $order->save();
+
+            return new WP_Error(
+                'payment_gateway_error',
+                $gateway_exception->getMessage(),
+                ['status' => 502]
+            );
+        }
+
+        if (empty($redirect_url)) {
+            $order->update_status('failed');
+            $order->add_order_note('Paylink invoice creation returned an empty redirect URL.');
+            $order->save();
+
+            return new WP_Error(
+                'payment_gateway_error',
+                'Paylink did not return a payment URL.',
+                ['status' => 502]
+            );
+        }
+
+        $order->update_meta_data('_szafit_paylink_redirect_url', esc_url_raw($redirect_url));
+        $order->save();
+
         return new WP_REST_Response([
             'success'  => true,
             'order_id' => (int) $order_id,
             'status'   => sanitize_text_field($order->get_status()),
             'total'    => wc_format_decimal($order->get_total(), wc_get_price_decimals()),
-            'redirect_url' => esc_url_raw($order->get_checkout_payment_url(true)),
+            'redirect_url' => esc_url_raw($redirect_url),
         ], 201);
 
     } catch (Exception $e) {
         return new WP_Error('order_creation_failed', $e->getMessage(), ['status' => 500]);
     }
+}
+
+function szafit_handle_paylink_callback(WP_REST_Request $request) {
+    if (!function_exists('wc_get_order')) {
+        return new WP_Error('wc_missing', 'WooCommerce is not available.', ['status' => 500]);
+    }
+
+    $order_id = absint($request->get_param('orderNumber') ?: $request->get_param('order_id'));
+    $transaction_no = sanitize_text_field((string) ($request->get_param('transactionNo') ?: ''));
+    $fallback_url = szafit_frontend_thank_you_url('ar', $order_id);
+
+    try {
+        if ($order_id < 1) {
+            throw new Exception('Missing order reference.');
+        }
+
+        if (empty($transaction_no)) {
+            throw new Exception('Missing transaction reference.');
+        }
+
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            throw new Exception('Order not found.');
+        }
+
+        $gateway = szafit_get_gateway_instance('paylink');
+        if (!$gateway || !method_exists($gateway, 'fetch_invoice_status')) {
+            throw new Exception('Paylink gateway is unavailable.');
+        }
+
+        $response_body = $gateway->fetch_invoice_status($transaction_no);
+        $order_status = mb_convert_case(sanitize_text_field($response_body['orderStatus'] ?? ''), MB_CASE_LOWER, 'UTF-8');
+        $locale = sanitize_key((string) $order->get_meta('_szafit_language'));
+        $locale = in_array($locale, ['ar', 'en'], true) ? $locale : 'ar';
+        $redirect_url = szafit_frontend_thank_you_url($locale, $order_id);
+        $payment_state = 'failed';
+
+        if ($order_status === 'paid') {
+            $order->update_meta_data('_paylink_transaction_no', $transaction_no);
+            $order->update_meta_data('_szafit_payment_status', 'paid');
+            $order->payment_complete($transaction_no);
+            $order->add_order_note(sprintf('Paylink payment completed via transaction %s.', $transaction_no));
+
+            if (function_exists('WC') && WC()->cart) {
+                WC()->cart->empty_cart();
+            }
+
+            $payment_state = 'paid';
+        } elseif ($order_status === 'pending' && empty($response_body['paymentErrors'])) {
+            $order->update_status('pending');
+            $order->update_meta_data('_szafit_payment_status', 'pending');
+            $payment_state = 'pending';
+        } elseif ($order_status === 'canceled') {
+            $order->update_status('cancelled');
+            $order->update_meta_data('_szafit_payment_status', 'cancelled');
+            $payment_state = 'cancelled';
+        } else {
+            $order->update_status('failed');
+            $order->update_meta_data('_szafit_payment_status', 'failed');
+        }
+
+        $order->save();
+
+        $redirect_url = add_query_arg('payment_status', $payment_state, $redirect_url);
+        if ($payment_state === 'paid') {
+            $redirect_url = add_query_arg('transactionNo', $transaction_no, $redirect_url);
+        }
+    } catch (Exception $e) {
+        $redirect_url = add_query_arg([
+            'payment_status'  => 'failed',
+            'payment_message' => sanitize_text_field($e->getMessage()),
+        ], $fallback_url);
+    }
+
+    wp_safe_redirect($redirect_url, 302);
+    exit;
 }

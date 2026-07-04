@@ -347,6 +347,192 @@ class WC_Gateway_Paylink extends WC_Payment_Gateway
         }
     }
 
+    /**
+     * Create a Paylink invoice URL for the provided order.
+     *
+     * @param WC_Order $order
+     * @param string $callback_url
+     * @return string
+     * @throws Exception
+     */
+    public function create_invoice_url(WC_Order $order, string $callback_url): string
+    {
+        $response_body = $this->request_add_invoice($order, $callback_url);
+
+        if (empty($response_body['url'])) {
+            throw new Exception(__('No URL found in the Paylink API response', 'paylink'));
+        }
+
+        return esc_url_raw((string) $response_body['url']);
+    }
+
+    /**
+     * Fetch the current Paylink invoice status for a transaction.
+     *
+     * @param string $transaction_no
+     * @return array
+     * @throws Exception
+     */
+    public function fetch_invoice_status(string $transaction_no): array
+    {
+        return $this->request_invoice_status($transaction_no);
+    }
+
+    /**
+     * Build a Paylink invoice payload for an order.
+     *
+     * @param WC_Order $order
+     * @param string $callback_url
+     * @return array
+     */
+    private function build_invoice_payload(WC_Order $order, string $callback_url): array
+    {
+        $language = $this->_get_order_language($order);
+        $products = [];
+
+        foreach ($order->get_items() as $item) {
+            $product = $item->get_product();
+            if (!$product) {
+                continue;
+            }
+
+            $description = trim((string) $product->get_description());
+            $title = trim((string) $product->get_name());
+
+            if (strlen($description) > 3900) {
+                $description = substr($description, 0, 3900);
+            }
+
+            if (strlen($title) > 250) {
+                $title = substr($title, 0, 250);
+            }
+
+            $products[] = [
+                'title' => $title,
+                'price' => wc_format_decimal($product->get_price(), wc_get_price_decimals()),
+                'qty' => (int) $item->get_quantity(),
+                'description' => $description,
+                'isDigital' => false,
+            ];
+        }
+
+        $client_name = trim(implode(' ', array_filter([
+            sanitize_text_field((string) $order->get_billing_first_name()),
+            sanitize_text_field((string) $order->get_billing_last_name()),
+        ])));
+
+        $payload = [
+            'orderNumber' => (string) $order->get_id(),
+            'clientName' => $client_name,
+            'clientMobile' => trim((string) $order->get_billing_phone()),
+            'amount' => wc_format_decimal($order->get_total(), wc_get_price_decimals()),
+            'callBackUrl' => esc_url_raw($callback_url),
+            'note' => '',
+            'lang' => $language,
+            'products' => $products,
+            'currency' => $order->get_currency(),
+            'displayPending' => true,
+        ];
+
+        $client_email = sanitize_email((string) $order->get_billing_email());
+        if (!empty($client_email)) {
+            $payload['clientEmail'] = $client_email;
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Perform the add-invoice request and return the decoded response.
+     *
+     * @param WC_Order $order
+     * @param string $callback_url
+     * @return array
+     * @throws Exception
+     */
+    private function request_add_invoice(WC_Order $order, string $callback_url): array
+    {
+        $endpoint = $this->base_url . '/api/addInvoice';
+
+        if (!$this->token && !$this->_paylink_auth()) {
+            throw new Exception(__('Failed to authenticate with the Paylink API!', 'paylink'));
+        }
+
+        $response = wp_safe_remote_post($endpoint, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type' => 'application/json',
+            ],
+            'body' => wp_json_encode($this->build_invoice_payload($order, $callback_url)),
+            'timeout' => 60,
+            'httpversion' => '1.1',
+            'user-agent' => '1.0',
+        ]);
+
+        if (is_wp_error($response)) {
+            throw new Exception(__('Failed to connect to the Paylink API. Please try again later.', 'paylink'));
+        }
+
+        $status_code = wp_remote_retrieve_response_code($response);
+        if (!$this->_check_response_status($status_code)) {
+            $error_message = wp_remote_retrieve_response_message($response);
+            throw new Exception(__('Failed to add invoice to Paylink API. Status Code:', 'paylink') . ' ' . ($status_code ?? 'N/A') . ', ' . __('Error:', 'paylink') . ' ' . ($error_message ?? 'N/A'));
+        }
+
+        $response_body = json_decode(wp_remote_retrieve_body($response), true);
+        if (empty($response_body)) {
+            throw new Exception(__('Empty response received from Paylink API while adding invoice.', 'paylink'));
+        }
+
+        return $response_body;
+    }
+
+    /**
+     * Perform the get-invoice request and return the decoded response.
+     *
+     * @param string $transaction_no
+     * @return array
+     * @throws Exception
+     */
+    private function request_invoice_status(string $transaction_no): array
+    {
+        if (empty($transaction_no)) {
+            throw new Exception(__('Transaction number is missing!', 'paylink'));
+        }
+
+        if (!$this->token && !$this->_paylink_auth()) {
+            throw new Exception(__('Failed to authenticate with the Paylink API!', 'paylink'));
+        }
+
+        $endpoint = $this->base_url . '/api/getInvoice/' . rawurlencode($transaction_no);
+        $response = wp_safe_remote_get($endpoint, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $this->token,
+                'Content-Type' => 'application/json',
+            ],
+            'timeout' => 60,
+            'httpversion' => '1.1',
+            'user-agent' => '1.0',
+        ]);
+
+        if (is_wp_error($response)) {
+            throw new Exception(__('Failed to connect to the Paylink API. Please try again later.', 'paylink'));
+        }
+
+        $status_code = wp_remote_retrieve_response_code($response);
+        if (!$this->_check_response_status($status_code)) {
+            $error_message = wp_remote_retrieve_response_message($response);
+            throw new Exception(__('Failed to get invoice from Paylink API. Status Code:', 'paylink') . ' ' . ($status_code ?? 'N/A') . ', ' . __('Error:', 'paylink') . ' ' . ($error_message ?? 'N/A'));
+        }
+
+        $response_body = json_decode(wp_remote_retrieve_body($response), true);
+        if (empty($response_body)) {
+            throw new Exception(__('Empty response received from Paylink API while getting invoice.', 'paylink'));
+        }
+
+        return $response_body;
+    }
+
     public function add_invoice($order_id)
     {
         try {

@@ -44,6 +44,7 @@ const copy = {
     phone: 'رقم الجوال *',
     phonePlaceholder: '+966 5X XXX XXXX',
     phoneError: 'رقم الجوال مطلوب',
+    phoneInvalidError: 'برجاء إدخال رقم جوال سعودي صحيح',
     email: 'البريد الإلكتروني (اختياري)',
     emailPlaceholder: 'example@email.com',
     emailError: 'البريد الإلكتروني غير صحيح',
@@ -73,6 +74,7 @@ const copy = {
     phone: 'Phone Number *',
     phonePlaceholder: '+966 5X XXX XXXX',
     phoneError: 'Phone number is required',
+    phoneInvalidError: 'Please enter a valid Saudi mobile number',
     email: 'Email (optional)',
     emailPlaceholder: 'example@email.com',
     emailError: 'Invalid email address',
@@ -357,6 +359,25 @@ const formId = "checkout-form-container";
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   }
 
+  function normalizeSaudiPhone(value) {
+    const digits = String(value || '').replace(/\D+/g, '');
+    if (!digits) return '';
+    let normalized = digits;
+    if (normalized.startsWith('00966')) {
+      normalized = normalized.slice(2);
+    }
+    if (normalized.startsWith('966')) {
+      return normalized.length >= 12 ? `+${normalized}` : '';
+    }
+    if (normalized.startsWith('05') && normalized.length === 10) {
+      return `+966${normalized.slice(1)}`;
+    }
+    if (normalized.startsWith('5') && normalized.length === 9) {
+      return `+966${normalized}`;
+    }
+    return '';
+  }
+
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -365,6 +386,7 @@ const formId = "checkout-form-container";
       const firstName = (form.elements.namedItem('first_name').value || '').trim();
       const phone     = (form.elements.namedItem('phone').value || '').trim();
       const email     = (form.elements.namedItem('email').value || '').trim();
+      const normalizedPhone = normalizeSaudiPhone(phone);
 
       let valid = true;
       if (!firstName) {
@@ -373,6 +395,9 @@ const formId = "checkout-form-container";
       }
       if (!phone) {
         showFieldError('phone', c.phoneError);
+        valid = false;
+      } else if (!normalizedPhone) {
+        showFieldError('phone', c.phoneInvalidError);
         valid = false;
       }
       if (email && !isValidEmail(email)) {
@@ -388,7 +413,7 @@ const formId = "checkout-form-container";
         payment_method: 'paylink',
         billing: {
           first_name: firstName,
-          phone,
+          phone: normalizedPhone,
           ...(email ? { email } : {}),
         },
       };
@@ -420,11 +445,7 @@ const formId = "checkout-form-container";
           throw new Error(c.serverError);
         }
 
-        const paymentUrl = new URL(`/${lang}/checkout/pay/`, window.location.origin);
-        paymentUrl.searchParams.set('order_id', String(data.order_id));
-        paymentUrl.searchParams.set('redirect_url', data.redirect_url);
-
-        window.location.href = paymentUrl.toString();
+        window.location.href = data.redirect_url;
 
       } catch (err) {
         const message = err instanceof Error ? err.message : c.serverError;

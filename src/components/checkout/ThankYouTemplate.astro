@@ -46,8 +46,13 @@ const programsArchiveUrl = `/${lang}/programs/`;
       </div>
 
       <!-- Heading -->
-      <h1 class="text-3xl lg:text-5xl font-bold text-text mb-4">{c.heading}</h1>
-      <p class="text-xl text-text-muted mb-8">{c.subheading}</p>
+      <h1 id="thank-you-heading" class="text-3xl lg:text-5xl font-bold text-text mb-4">{c.heading}</h1>
+      <p id="thank-you-subheading" class="text-xl text-text-muted mb-8">{c.subheading}</p>
+
+      <div id="payment-status-banner" class="hidden mb-8 rounded-2xl border px-5 py-4 text-start">
+        <p id="payment-status-title" class="font-bold mb-1"></p>
+        <p id="payment-status-body" class="text-sm leading-relaxed"></p>
+      </div>
       
       <!-- Order ID box -->
       <div id="order-box" class="hidden mb-8">
@@ -64,7 +69,7 @@ const programsArchiveUrl = `/${lang}/programs/`;
         </div>
       </div>
 
-      <p class="text-text-muted text-base lg:text-lg leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0">
+      <p id="thank-you-body" class="text-text-muted text-base lg:text-lg leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0">
         {c.body}
       </p>
 
@@ -93,10 +98,64 @@ const programsArchiveUrl = `/${lang}/programs/`;
   document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const orderId = params.get('order_id');
+    const paymentStatus = (params.get('payment_status') || 'paid').toLowerCase();
+    const paymentMessage = params.get('payment_message') || '';
     const box = document.getElementById('order-box');
     const display = document.getElementById('order-id-display');
     const copyBtn = document.getElementById('copy-order-btn');
     const copyText = document.getElementById('copy-text');
+    const heading = document.getElementById('thank-you-heading');
+    const subheading = document.getElementById('thank-you-subheading');
+    const statusBanner = document.getElementById('payment-status-banner');
+    const statusTitle = document.getElementById('payment-status-title');
+    const statusBody = document.getElementById('payment-status-body');
+    const body = document.getElementById('thank-you-body');
+    const isAr = window.location.pathname.includes('/ar');
+
+    const statusCopy = {
+      paid: {
+        heading: isAr ? 'شكراً!' : 'Thank You!',
+        subheading: isAr ? 'تم استقبال طلبك بنجاح' : 'Your order was received successfully',
+        body: isAr ? 'سيتم التواصل معك قريبًا لتأكيد البرنامج والبدء في رحلتك.' : 'We will contact you shortly to confirm your program and start your journey.',
+        tone: 'success',
+      },
+      pending: {
+        heading: isAr ? 'الدفع قيد المراجعة' : 'Payment pending',
+        subheading: isAr ? 'لم نتمكن من تأكيد الدفع بعد' : 'We could not confirm the payment yet',
+        body: isAr ? 'إذا تم الخصم، احتفظ برقم الطلب وتواصل معنا على الدعم أو واتساب لمتابعة حالتك.' : 'If your card was charged, keep your order number and contact support so we can verify the payment.',
+        tone: 'warning',
+      },
+      cancelled: {
+        heading: isAr ? 'تم إلغاء الدفع' : 'Payment cancelled',
+        subheading: isAr ? 'تم إلغاء عملية الدفع قبل اكتمالها' : 'The payment was cancelled before completion',
+        body: isAr ? 'يمكنك المحاولة مرة أخرى من صفحة الاشتراك أو التواصل مع الدعم إذا احتجت مساعدة.' : 'You can try again from the checkout page or contact support if you need help.',
+        tone: 'danger',
+      },
+      failed: {
+        heading: isAr ? 'لم يكتمل الدفع' : 'Payment failed',
+        subheading: isAr ? 'لم تكتمل عملية الدفع' : 'The payment did not complete',
+        body: isAr ? 'إذا استمر الخطأ، تواصل مع الدعم وأرسل رقم الطلب حتى نساعدك في المتابعة.' : 'If the issue persists, contact support and share your order number so we can help.',
+        tone: 'danger',
+      },
+    };
+
+    const resolvedStatus = statusCopy[paymentStatus] || statusCopy.paid;
+    const bannerToneClasses = {
+      success: ['border-primary-green/30', 'bg-primary-green/5', 'text-text'],
+      warning: ['border-amber-300', 'bg-amber-50', 'text-text'],
+      danger: ['border-secondary-red-dark-2/40', 'bg-secondary-red-dark-1/20', 'text-text'],
+    };
+
+    if (heading) heading.textContent = resolvedStatus.heading;
+    if (subheading) subheading.textContent = resolvedStatus.subheading;
+    if (body) body.textContent = resolvedStatus.body;
+
+    if (statusBanner && statusTitle && statusBody && paymentStatus !== 'paid') {
+      statusBanner.classList.remove('hidden');
+      statusBanner.classList.add(...(bannerToneClasses[resolvedStatus.tone] || bannerToneClasses.success));
+      statusTitle.textContent = resolvedStatus.subheading;
+      statusBody.textContent = paymentMessage ? `${resolvedStatus.body} ${paymentMessage}` : resolvedStatus.body;
+    }
 
     if (orderId && box && display) {
       display.textContent = orderId;
