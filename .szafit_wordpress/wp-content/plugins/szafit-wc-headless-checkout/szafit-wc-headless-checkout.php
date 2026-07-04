@@ -70,6 +70,45 @@ function szafit_get_gateway($gateway_id) {
     return $gateway;
 }
 
+function szafit_get_client_ip() {
+    $header_candidates = [
+        'HTTP_CF_CONNECTING_IP',
+        'HTTP_X_REAL_IP',
+    ];
+
+    foreach ($header_candidates as $header_name) {
+        if (!empty($_SERVER[$header_name])) {
+            $ip = sanitize_text_field(wp_unslash($_SERVER[$header_name]));
+            if (!empty($ip)) {
+                return $ip;
+            }
+        }
+    }
+
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $forwarded_for = sanitize_text_field(wp_unslash($_SERVER['HTTP_X_FORWARDED_FOR']));
+        $forwarded_ips = array_filter(array_map('trim', explode(',', $forwarded_for)));
+        if (!empty($forwarded_ips)) {
+            return $forwarded_ips[0];
+        }
+    }
+
+    return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
+}
+
+function szafit_checkout_rate_limit_key($client_ip) {
+    // Bump the version suffix to intentionally reset any old buckets after rate-limit tuning.
+    return 'szafit_checkout_rate_v2_' . md5((string) $client_ip);
+}
+
+function szafit_checkout_rate_limit_max_attempts() {
+    return max(1, (int) apply_filters('szafit_checkout_rate_limit_max_attempts', 20));
+}
+
+function szafit_checkout_rate_limit_window() {
+    return max(60, (int) apply_filters('szafit_checkout_rate_limit_window', HOUR_IN_SECONDS));
+}
+
 // ================================================
 // CORS — OPTIONS PREFLIGHT
 // Fires at init (priority 1) — before WP routing — so the browser
@@ -215,17 +254,16 @@ function szafit_create_order(WP_REST_Request $request) {
             return new WP_Error('forbidden_origin', 'Origin not allowed.', ['status' => 403]);
         }
 
-        // Rate limiting — 5 attempts per IP per hour
-        $client_ip  = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
-        $rate_key   = 'szafit_checkout_rate_' . md5($client_ip);
-        $attempts   = (int) get_transient($rate_key);
-        $max_attempts = 5;
+        // Rate limiting — keep retries reasonable while we test live payment flow.
+        $client_ip    = szafit_get_client_ip();
+        $rate_key     = szafit_checkout_rate_limit_key($client_ip);
+        $attempts     = (int) get_transient($rate_key);
+        $max_attempts = szafit_checkout_rate_limit_max_attempts();
+        $rate_window  = szafit_checkout_rate_limit_window();
 
         if ($attempts >= $max_attempts) {
             return new WP_Error('rate_limited', 'Too many checkout attempts. Please try again later.', ['status' => 429]);
         }
-
-        set_transient($rate_key, $attempts + 1, HOUR_IN_SECONDS);
 
         $data = $request->get_json_params();
         if (!is_array($data)) {
@@ -276,6 +314,8 @@ function szafit_create_order(WP_REST_Request $request) {
         if (!empty($email) && !is_email($email)) {
             return new WP_Error('invalid_email', 'Email address is not valid.', ['status' => 400]);
         }
+
+        set_transient($rate_key, $attempts + 1, $rate_window);
 
         $product = wc_get_product($product_id);
         if (!$product) {
